@@ -1,6 +1,6 @@
 #
 #   PROJECT:   VHDL Code Generator
-#   NAME:      
+#   NAME:      SystemVisual
 #
 #   DATE: 12/10/13
 #   TIME: 8:36 PM
@@ -14,8 +14,13 @@ from PyQt4 import uic
 
 class QSystem(QGraphicsItem):
     COLOR = 0,0,100,100 # Red, Green, Blue, Alpha
-    height = 160
+    HEIGHT = 160
+
     def __init__(self, system, parent = None):
+        """ QGraphicsItem that represent the system of the current project.
+            Each QSystem has an array of input ports, an array of output ports,
+            & a rectangle that enclose the area (pure estetically)
+        """
         super().__init__(parent)
         self.system = system
         self.rect = QRectF(-4*WIDTH/10,-4*HEIGHT/10,4*WIDTH/5,4*HEIGHT/5)

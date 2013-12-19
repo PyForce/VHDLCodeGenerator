@@ -6,6 +6,9 @@
 #   TIME: 19:12 PM
 #
 
+# TODO: FIX IMPORTS
+# TODO: Change default templates. Remove Date&Time and Add License&Authors(BlakeTeam)
+
 import sys
 from Class import *
 from Visual import *
@@ -16,12 +19,3 @@ if __name__ == '__main__':
 
     window.show()
     sys.exit(app.exec_())
-
-
-
-
-
-
-
-
-

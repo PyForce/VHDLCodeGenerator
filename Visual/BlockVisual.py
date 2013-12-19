@@ -1,6 +1,6 @@
 #
 #   PROJECT:   VHDL Code Generator
-#   NAME:      
+#   NAME:      Block Visual
 #
 #   DATE: 12/10/13
 #   TIME: 7:14 PM
@@ -16,6 +16,8 @@ class QBlock(QGraphicsItem):
     COLOR = 0,100,0,100 # Red, Green, Blue, Alpha
 
     def __init__(self, block, parent = None):
+        """ QGraphicsItem that represent the Blocks of VHDL Code.
+        """
         super().__init__(parent)
         self.block = block
         self.height = QBlock.DX*(max(len(self.block.input_ports), len(self.block.output_ports))+1)

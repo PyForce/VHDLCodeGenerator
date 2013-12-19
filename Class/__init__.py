@@ -9,6 +9,6 @@
 IN = 1
 OUT = 0
 
-from .BlockClass import *
+from .Block import *
 from .Connection import *
 from .System import *
