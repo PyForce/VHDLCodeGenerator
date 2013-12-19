@@ -1,4 +1,5 @@
 VHDLCodeGenerator
 =================
 
-The objective of this project is develop a visual interface to build vhdl code, and generate automatically the content of it.
+Automtic VHDL code generator, using a graphic interface.
+This project is being developed in python and is using Qt for python to make the graphic interface.
