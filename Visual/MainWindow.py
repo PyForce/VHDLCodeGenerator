@@ -1,0 +1,69 @@
+#
+#   PROJECT:   VHDL Code Generator
+#   NAME:      
+#
+#   DATE: 12/10/13
+#   TIME: 7:11 PM
+#
+
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+from PyQt4 import uic
+
+from .BlockVisual import *
+from Class.System import System
+from .SystemVisual import *
+from main import *
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.initializeUI()
+        self.currentView = None
+
+        # self.create()
+
+    def initializeUI(self):
+        self.ui = uic.loadUi('circuits.ui', self)
+        self.initializeTabWidget()
+        self.initializeActions()
+        self.ui.BlockBox.closeEvent = lambda event: self.ui.action_Block_Box.toggle()
+
+    def initializeView(self,view):
+        scene = QGraphicsScene()
+        view.setScene(scene)
+
+        def view_wheelEvent(event):
+            if event.delta() > 0:
+                self.currentView.scale(1.25,1.25)
+            else:
+                self.currentView.scale(0.8,0.8)
+
+        view.setSceneRect(-WIDTH/2,-HEIGHT/2,WIDTH,HEIGHT)
+        view.wheelEvent = view_wheelEvent
+
+    def initializeActions(self):
+        self.ui.action_New_System.triggered.connect(self.create)
+
+    def initializeTabWidget(self):
+        self.ui.tabWidget.tabCloseRequested.connect(self.ui.tabWidget.removeTab)
+        self.ui.tabWidget.currentChanged.connect(self.changeTab)
+
+    def changeTab(self,tab):
+        try:
+            self.currentView = self.tabWidget.widget(self.tabWidget.currentIndex()).layout().itemAt(0).widget()   # Current View
+
+            system = System("main",(2,3),(5,))
+            self.currentView.scene().addItem(QSystem(system))
+        except AttributeError:
+            pass
+
+    def create(self):
+        widget = QWidget()
+        self.ui.tabWidget.insertTab(self.ui.tabWidget.count(),widget,"new")
+        view = QGraphicsView()
+        layout = QHBoxLayout()
+        widget.setLayout(layout)
+        layout.addWidget(view)
+        self.initializeView(view)
+
