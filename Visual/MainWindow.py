@@ -25,41 +25,19 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.initializeUI()
 
-        # Current info related to the project that the user is working
-        self.currentView = None
-
+        self.projects = {}              # All projects {string name: IProject project }
+        self.dynamicProjectTable = {}   # All projects opened (on tabs) {int tabIndex: IProject project }
+        self.currentProject = None      # Project that is being used on each moment
 
     def initializeUI(self):
         """ Initialize all graphics components of the Main Window.
         """
-        self.ui = uic.loadUi('circuits.ui', self)
-        self.initializeActions()
+        self.ui = uic.loadUi('mainWindow.ui', self)
+
+        # Toggling dock widgets on closing
         self.ui.BlockBox.closeEvent = lambda event: self.ui.action_Block_Box.toggle()
 
-    def initializeView(self,view):
-        """ Initialize all QGraphicsView components.
-        """
-        scene = QGraphicsScene()
-        view.setScene(scene)
-
-        def view_wheelEvent(event):
-            if event.delta() > 0:
-                self.currentView.scale(1.25,1.25)
-            else:
-                self.currentView.scale(0.8,0.8)
-
-        view.setSceneRect(-WIDTH/2,-HEIGHT/2,WIDTH,HEIGHT)
-        view.wheelEvent = view_wheelEvent
-
-    def initializeActions(self):
-        """  Connect all action with the signals.
-        """
-        self.initializeTabWidget()
         self.ui.action_New_System.triggered.connect(self.create)
-
-    def initializeTabWidget(self):
-        """ Initialize the actions on the TabWidget
-        """
         self.ui.tabWidget.tabCloseRequested.connect(self.ui.tabWidget.removeTab)
         self.ui.tabWidget.currentChanged.connect(self.changeTab)
 
@@ -69,7 +47,8 @@ class MainWindow(QMainWindow):
         """
         # TODO: This is a test code, here is when we set the new current project
         try:
-            self.currentView = self.tabWidget.widget(self.tabWidget.currentIndex()).layout().itemAt(0).widget()   # Current View
+            print(tab)
+            # self.currentView = self.tabWidget.widget(self.tabWidget.currentIndex()).layout().itemAt(0).widget()   # Current View
             # system = _System("main",(2,3),(5,))
             # self.currentView.scene().addItem(QSystem(system))
         except AttributeError:
@@ -79,6 +58,7 @@ class MainWindow(QMainWindow):
         """ Create a new Project, generating a new TabWidget and initializing it components.
         """
         #TODO: We have to allow that the user can set the name of the current project.
+        #TODO: Two projects with the same name are not allowed
 
         widget = QWidget()  # Widget on the TabWidget
         self.ui.tabWidget.insertTab(self.ui.tabWidget.count(),widget,"new")
@@ -86,4 +66,4 @@ class MainWindow(QMainWindow):
         layout = QHBoxLayout()
         widget.setLayout(layout)
         layout.addWidget(view)
-        self.initializeView(view)
+        # self.initializeView(view)
