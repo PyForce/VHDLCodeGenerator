@@ -23,9 +23,6 @@ sys.path.append(visual_dir)
 
 from MainWindow import MainWindow
 
-IN = 1
-OUT = 0
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()

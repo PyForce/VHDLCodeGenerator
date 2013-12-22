@@ -14,7 +14,6 @@ from PyQt4 import uic
 from Class import *
 from Visual import *
 
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
