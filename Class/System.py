@@ -2,13 +2,15 @@
 #   PROJECT:   VHDL Code Generator
 #   NAME:      Class System
 #
-#   DATE: 12/10/13
-#   TIME: 5:18 PM
+#   LICENSE:   GNU-GPL V3
 #
+
+__author__ = "BlakeTeam"
 
 # TODO: Comment system (Comments & Doc are different things)
 
 from Class import *
+from main import *
 
 class System:
     def __init__(self,name,input_vector,output_vector):

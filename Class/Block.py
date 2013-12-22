@@ -2,11 +2,13 @@
 #   PROJECT:   VHDL Code Generator
 #   NAME:      Class Blocks
 #
-#   DATE: 12/10/13
-#   TIME: 5:33 PM
+#   LICENSE:   GNU-GPL V3
 #
 
-from Class.System import *
+__author__ = "BlakeTeam"
+
+from Class import *
+from main import *
 
 class Block:
     def __init__(self, input_vector, output_vector, system):

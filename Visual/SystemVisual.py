@@ -2,15 +2,16 @@
 #   PROJECT:   VHDL Code Generator
 #   NAME:      SystemVisual
 #
-#   DATE: 12/10/13
-#   TIME: 8:36 PM
+#   LICENSE:   GNU-GPL V3
 #
 
-from Visual import *
+__author__ = "BlakeTeam"
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from PyQt4 import uic
+
+from Visual import *
+from Visual import *
 
 class QSystem(QGraphicsItem):
     COLOR = 0,0,100,100 # Red, Green, Blue, Alpha

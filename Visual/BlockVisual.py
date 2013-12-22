@@ -2,13 +2,16 @@
 #   PROJECT:   VHDL Code Generator
 #   NAME:      Block Visual
 #
-#   DATE: 12/10/13
-#   TIME: 7:14 PM
+#   LICENSE:   GNU-GPL V3
 #
+
+__author__ = "BlakeTeam"
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from PyQt4 import uic
+
+from Visual import *
+from Visual import *
 
 class QBlock(QGraphicsItem):
     DX = 10 # Distance between ports

@@ -2,11 +2,13 @@
 #   PROJECT:   VHDL Code Generator
 #   NAME:      Class Connection
 #
-#   DATE: 12/10/13
-#   TIME: 5:33 PM
+#   LICENSE:   GNU-GPL V3
 #
 
+__author__ = "BlakeTeam"
+
 from Class import *
+from main import *
 
 class Connection:
     def __init__(self, out_block, ind_output, in_block, ind_input, system):

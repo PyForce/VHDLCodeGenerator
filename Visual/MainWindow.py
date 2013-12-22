@@ -2,18 +2,18 @@
 #   PROJECT:   VHDL Code Generator
 #   NAME:      Main Window
 #
-#   DATE: 12/10/13
-#   TIME: 7:11 PM
+#   LICENSE:   GNU-GPL V3
 #
+
+__author__ = "BlakeTeam"
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
 
-from .BlockVisual import *
-from Class.System import System
-from .SystemVisual import *
-from main import *
+from Class import *
+from Visual import *
+
 
 class MainWindow(QMainWindow):
     def __init__(self):

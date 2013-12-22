@@ -2,16 +2,29 @@
 #   PROJECT:   VHDL Code Generator
 #   NAME:      main
 #
-#   DATE: 12/10/13
-#   TIME: 19:12 PM
+#   LICENSE:   GNU-GPL V3
 #
 
+__author__ = "BlakeTeam"
+
 # TODO: FIX IMPORTS
-# TODO: Change default templates. Remove Date&Time and Add License&Authors(BlakeTeam)
 
 import sys
-from Class import *
-from Visual import *
+import os
+
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
+class_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'Class'))
+visual_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'Visual'))
+
+sys.path.append(class_dir)
+sys.path.append(visual_dir)
+
+from MainWindow import MainWindow
+
+IN = 1
+OUT = 0
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
