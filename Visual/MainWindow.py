@@ -11,8 +11,14 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
 
-from Class import *
-from Visual import *
+from Class.System import System as _System
+from Class.Block import *
+from Class.Connection import *
+
+from Visual.SystemVisual import *
+
+WIDTH = 200
+HEIGHT = 200
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -21,6 +27,7 @@ class MainWindow(QMainWindow):
 
         # Current info related to the project that the user is working
         self.currentView = None
+
 
     def initializeUI(self):
         """ Initialize all graphics components of the Main Window.
@@ -57,13 +64,14 @@ class MainWindow(QMainWindow):
         self.ui.tabWidget.currentChanged.connect(self.changeTab)
 
     def changeTab(self,tab):
-        """ Action that is executed when the
+        """ Action that is executed when the tab is changed.
+            Current project should be changed.
         """
         # TODO: This is a test code, here is when we set the new current project
         try:
             self.currentView = self.tabWidget.widget(self.tabWidget.currentIndex()).layout().itemAt(0).widget()   # Current View
-            system = System("main",(2,3),(5,))
-            self.currentView.scene().addItem(QSystem(system))
+            # system = _System("main",(2,3),(5,))
+            # self.currentView.scene().addItem(QSystem(system))
         except AttributeError:
             pass
 

@@ -8,7 +8,6 @@
 __author__ = "BlakeTeam"
 
 from Class import *
-from main import *
 
 class Connection:
     def __init__(self, out_block, ind_output, in_block, ind_input, system):
@@ -33,7 +32,20 @@ class Connection:
 
         self.size = out_block.output_ports[ind_output].size
 
-        self.name = system.get_name(self)
+        self.name = self.get_name(self)
+
+    def get_name(self):
+        """ Return a valid name for the block.
+            A name that is not in the list of names in the current system.
+        """
+        ind = 0
+        while True:
+            name = "conn" + str(ind)
+            if not name in self.conn_name:
+                self.conn_name.add(name)
+                return name
+            else:
+                ind += 1
 
     def setName(self,name):
         """ Set the name of the current connection.
@@ -41,6 +53,10 @@ class Connection:
 
         :String name:      The new name of this connection.
         """
+        # Check that the new name do not already exist
+        if name in self.system.conn_name:
+            raise ValueError("This name already exist")
+
         self.system.conn_name.remove(self.name)
         self.system.conn_name.add(name)
         self.name = name

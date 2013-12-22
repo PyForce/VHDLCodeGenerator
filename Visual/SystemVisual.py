@@ -10,17 +10,19 @@ __author__ = "BlakeTeam"
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from Visual import *
-from Visual import *
+from Class.System import *
+from Class.Block import *
+from Class.Connection import *
+
+from Visual.MainWindow import *
 
 class QSystem(QGraphicsItem):
     COLOR = 0,0,100,100 # Red, Green, Blue, Alpha
-    HEIGHT = 160
 
     def __init__(self, system, parent = None):
         """ QGraphicsItem that represent the system of the current project.
             Each QSystem has an array of input ports, an array of output ports,
-            & a rectangle that enclose the area (pure estetically)
+            & a rectangle that enclose the area (pure esthetically)
         """
         super().__init__(parent)
         self.system = system
@@ -38,8 +40,8 @@ class QSystem(QGraphicsItem):
         InputBlock = self.system.system_input
         OutputBlock = self.system.system_output
 
-        di = self.height/(len(InputBlock.input_ports) + 1)
-        do = self.height/(len(OutputBlock.output_ports) + 1)
+        di = HEIGHT/(len(InputBlock.input_ports) + 1)
+        do = HEIGHT/(len(OutputBlock.output_ports) + 1)
 
         painter.drawRect(self.rect)
         painter.fillRect(self.rect, QColor(*QSystem.COLOR))

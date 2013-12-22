@@ -8,7 +8,6 @@
 __author__ = "BlakeTeam"
 
 from Class import *
-from main import *
 
 class Block:
     def __init__(self, input_vector, output_vector, system):
@@ -24,7 +23,20 @@ class Block:
         self.output_ports = [Port("out"+str(i),output_vector[i],OUT) for i in range(len(output_vector))]
 
         self.system = system
-        self.name = system.get_name(self)
+        self.name = self.get_name(self)
+
+    def get_name(self):
+        """ Return a valid name for the block.
+            A name that is not in the list of names in the current system.
+        """
+        ind = 0
+        while True:
+            name = "block" + str(ind)
+            if not name in self.system.block_name:
+                self.system.block_name.add(name)
+                return name
+            else:
+                ind += 1
 
     def __getitem__(self, name):
         """ Find a port for his name.
@@ -50,7 +62,10 @@ class Block:
 
         :String name:      The new name of this block.
         """
-        # TODO: Validate the new name (there is no another object with the same name) in the system.
+        # Check that the new name do not already exist
+        if name in self.system.block_name:
+            raise ValueError("This name already exist")
+
         self.system.block_name.remove(self.name)
         self.system.block_name.add(name)
         self.name = name

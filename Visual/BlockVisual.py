@@ -10,7 +10,7 @@ __author__ = "BlakeTeam"
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from Visual import *
+from Class import *
 from Visual import *
 
 class QBlock(QGraphicsItem):

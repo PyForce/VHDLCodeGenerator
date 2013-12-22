@@ -3,5 +3,3 @@
 #   NAME:      Visual Modeules
 #
 
-WIDTH = 200
-HEIGHT = 200
