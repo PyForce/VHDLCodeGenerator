@@ -42,7 +42,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBox">
+          <widget class="QSpinBox" name="inputPorts">
            <property name="maximum">
             <number>8</number>
            </property>
@@ -63,7 +63,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBox_2">
+          <widget class="QSpinBox" name="outputPorts">
            <property name="minimum">
             <number>1</number>
            </property>

@@ -7,6 +7,8 @@
 
 __author__ = "BlakeTeam"
 
+import os.path
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -14,15 +16,16 @@ from Class import System as _System
 from Visual.MainWindow import *
 
 class IProject:
-    def __init__(self,name,input_vector,output_vector):
+    def __init__(self,path,input_vector,output_vector):
         """ Interface to handle each project.
 
-        :string name: Name of the project (its the same that the system)
+        :string path:           Directory (name included of the current project)
         :Int[] input_vector:    List with the size of the input ports of the system
         :Int[] output_vector:   List with the size of the output ports of the system
         """
-        self.name = name
-        self.system = _System(name,input_vector,output_vector)
+        self.dir,self.name = os.path.split(path)
+        realName = self.name.split('.')[0]  # The name of the project without the extension
+        self.system = _System(realName,input_vector,output_vector)
         self.scene = QGraphicsScene()
         self.view = QGraphicsView()
         self.view.setScene(self.scene)

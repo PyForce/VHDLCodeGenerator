@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.initializeUI()
 
-        self.projects = {}              # All projects {string name: IProject project }
+        self.projects = {}              # All projects {string dirName: IProject project }
         self.dynamicProjectTable = {}   # All projects opened (on tabs) {int tabIndex: IProject project }
         self.currentProject = None      # Project that is being used on each moment
 
