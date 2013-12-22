@@ -1,9 +1,9 @@
-#
+#-------------------------------------------------------------------------------
 #   PROJECT:   VHDL Code Generator
-#   NAME:      Class Connection
+#   NAME:      Connection
 #
 #   LICENSE:   GNU-GPL V3
-#
+#-------------------------------------------------------------------------------
 
 __author__ = "BlakeTeam"
 
