@@ -5,6 +5,8 @@
 #   LICENSE:   GNU-GPL V3
 #-------------------------------------------------------------------------------
 
+__author__ = "BlakeTeam"
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
