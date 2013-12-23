@@ -11,11 +11,11 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
 
-from Class.System import System as _System
-from Class.Block import *
-from Class.Connection import *
+from lib.System import System as _System
+from lib.Block import *
+from lib.Connection import *
 
-from Visual.SystemVisual import *
+from visual.SystemVisual import *
 
 WIDTH = 200
 HEIGHT = 200

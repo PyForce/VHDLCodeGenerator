@@ -1,6 +1,6 @@
 #
 #   PROJECT:   VHDL Code Generator
-#   NAME:      Class Modules
+#   NAME:      lib Modules
 #
 
 IN = 1

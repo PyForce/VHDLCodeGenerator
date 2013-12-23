@@ -171,17 +171,6 @@
     </layout>
    </item>
   </layout>
-  <zorder>pushButton</zorder>
-  <zorder>pushButton_2</zorder>
-  <zorder>label</zorder>
-  <zorder>lineEdit</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>layoutWidget_2</zorder>
-  <zorder>totInputPorts</zorder>
-  <zorder>totInputPorts</zorder>
-  <zorder>scrollArea</zorder>
-  <zorder>scrollArea_2</zorder>
-  <zorder>statusBar</zorder>
  </widget>
  <resources/>
  <connections/>

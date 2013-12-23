@@ -13,11 +13,13 @@ import os
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-class_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'Class'))
-visual_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'Visual'))
+data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data'))
+class_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'))
+visual_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'visual'))
 
 sys.path.append(class_dir)
 sys.path.append(visual_dir)
+sys.path.append(data_dir)
 
 from MainWindow import MainWindow
 

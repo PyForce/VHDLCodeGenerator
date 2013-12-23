@@ -7,7 +7,7 @@
 
 __author__ = "BlakeTeam"
 
-from Class import *
+from lib import *
 
 class Block:
     def __init__(self, input_vector, output_vector, system):

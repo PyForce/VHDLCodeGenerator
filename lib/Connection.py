@@ -7,7 +7,7 @@
 
 __author__ = "BlakeTeam"
 
-from Class import *
+from lib import *
 
 class Connection:
     def __init__(self, out_block, ind_output, in_block, ind_input, system):

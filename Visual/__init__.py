@@ -1,5 +1,5 @@
 #
 #   PROJECT:   VHDL Code Generator
-#   NAME:      Visual Modeules
+#   NAME:      visual Modeules
 #
 

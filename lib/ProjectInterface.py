@@ -9,11 +9,8 @@ __author__ = "BlakeTeam"
 
 import os.path
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-from Class import System as _System
-from Visual.MainWindow import *
+from lib import System as _System
+from data.MainWindow import *
 
 class IProject:
     def __init__(self,path,input_vector,output_vector):
