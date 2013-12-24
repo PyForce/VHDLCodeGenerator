@@ -31,7 +31,7 @@ class IProject:
         self.initializeView(self.view) #TODO: Test the view initializer(wheel event)
 
     @classmethod
-    def load(path):
+    def load(cls,path):
         dir, name = os.path.split(path)###########################
         file = open(dir + "\\" + name,"rb")#######################
         system = pickle.load(file)################################

@@ -15,6 +15,14 @@ from visual.PortConfiguration import *
 
 class PortConfigurationWindow(QWidget):
     def __init__(self, name, tot_input, tot_output, main, parent):
+        """ Window to configure name and size of all ports (input/output)
+
+        :string name:       Name of the project
+        :int tot_input:     Amount of input ports
+        :param tot_output:  Amount of output ports
+        :MainWindow main:   Reference to the mainWindow
+        :NewProject parent: Reference to newProjectWindow
+        """
         super().__init__()
         self.main = main
         self.totInputPorts = tot_input
@@ -43,6 +51,10 @@ class PortConfigurationWindow(QWidget):
         self.ui.cancelButton.clicked.connect(self.cancel)
 
     def validate(self):
+        """ Check if all names are valid, they doesn't match between them
+
+        :return:    True/False
+        """
         validNames = set()
         _in = self.inputWidget.lineEdit
         _out = self.outputWidget.lineEdit

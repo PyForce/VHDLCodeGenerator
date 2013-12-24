@@ -14,7 +14,7 @@ from PyQt4 import uic
 from data.PortConfigurationWindow import *
 
 class NProjectWindow(QWidget):
-    def __init__(self, main, project=None):
+    def __init__(self, main, project = None):
         super().__init__()
         self.initializeUI()
         self.main = main
@@ -50,5 +50,6 @@ class NProjectWindow(QWidget):
     def validateName(self,text):
         """ Check that the current name selected is available
         """
+        # TODO: Check that this name doesn't exist already on the current directory
         return  not (text == "" or text in self.main.projects)
 

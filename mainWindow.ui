@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="tabExplorer">
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -58,6 +58,7 @@
      <string>&amp;View</string>
     </property>
     <addaction name="action_Block_Box"/>
+    <addaction name="actionExplorer"/>
    </widget>
    <widget class="QMenu" name="menu_Generate">
     <property name="title">
@@ -88,6 +89,27 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QTreeView" name="ItemSelector"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="Explorer">
+   <property name="windowTitle">
+    <string>Explorer</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QTreeWidget" name="explorerTree">
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -150,6 +172,17 @@
     <string>&amp;VHDL Code</string>
    </property>
   </action>
+  <action name="actionExplorer">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Explorer</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
@@ -182,6 +215,22 @@
     <hint type="destinationlabel">
      <x>136</x>
      <y>255</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionExplorer</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Explorer</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>136</x>
+     <y>374</y>
     </hint>
    </hints>
   </connection>
