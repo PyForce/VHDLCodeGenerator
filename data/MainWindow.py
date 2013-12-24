@@ -65,5 +65,5 @@ class MainWindow(QMainWindow):
         projectCreator = NProjectWindow(self)
         projectCreator.show()
 
-    def createProject(self,name,input_info,outpu_info):
+    def createProject(self,name,input_info,output_info):
         print("Creating Project")
