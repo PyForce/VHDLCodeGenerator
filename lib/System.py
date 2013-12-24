@@ -16,12 +16,12 @@ IN = 1
 OUT = 0
 
 class System:
-    def __init__(self,name,input_vector,output_vector):
+    def __init__(self,name,input_info,output_info):
         """ Structure that handles an abstract system
 
         :String name:           Name of the system (Name of the project)
-        :Int[] input_vector:    List with the size of the input ports of the system
-        :Int[] output_vector:   List with the size of the output ports of the system
+        :Int[] input_info:      List with the name & size of the input ports of the system
+        :Int[] output_info:     List with the name & size of the output ports of the system
         """
         self.name = name        # The name of the system
 
@@ -30,15 +30,15 @@ class System:
 
         self.block = []         # Block list of the system
         self.connections = []   # Connection list of the system
-        self.system_input = _Block((),input_vector,self)
+        self.system_input = _Block((),[size for name,size in input_info],self)
         self.system_input.setName("SystemInput")
-        self.system_output = _Block(output_vector,(),self)
+        self.system_output = _Block([size for name,size in output_info],(),self)
         self.system_output.setName("SystemOutput")
 
-        self.input_vector = input_vector
-        self.input_names = ["in" + str(i) for i in range(len(input_vector))]
-        self.output_vector = output_vector
-        self.output_names = ["out" + str(i) for i in range(len(output_vector))]
+        self.input_info = input_info
+        self.input_names = [name for name,size in input_info]
+        self.output_info = output_info
+        self.output_names = [name for name,size in output_info]
 
     def __getitem__(self, name):
         """ Find a port for his name.

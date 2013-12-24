@@ -14,10 +14,10 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data'))
-class_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'))
+lib_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'))
 visual_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'visual'))
 
-sys.path.append(class_dir)
+sys.path.append(lib_dir)
 sys.path.append(visual_dir)
 sys.path.append(data_dir)
 

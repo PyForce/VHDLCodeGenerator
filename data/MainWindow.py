@@ -16,6 +16,7 @@ from lib.Block import *
 from lib.Connection import *
 
 from visual.SystemVisual import *
+from NewProject import *
 
 WIDTH = 200
 HEIGHT = 200
@@ -61,10 +62,8 @@ class MainWindow(QMainWindow):
         #TODO: We have to allow that the user can set the name of the current project.
         #TODO: Two projects with the same name are not allowed
 
-        widget = QWidget()  # Widget on the TabWidget
-        self.ui.tabWidget.insertTab(self.ui.tabWidget.count(),widget,"new")
-        view = QGraphicsView()
-        layout = QHBoxLayout()
-        widget.setLayout(layout)
-        layout.addWidget(view)
-        # self.initializeView(view)
+        projectCreator = NProjectWindow(self)
+        projectCreator.show()
+
+    def createProject(self,name,input_info,outpu_info):
+        print("Creating Project")

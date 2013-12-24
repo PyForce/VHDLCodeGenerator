@@ -20,17 +20,21 @@ class PortWidget(QWidget):
         self.defaultName = defaultName
         self.total = total  # Total of ports on the screen
 
-        self.nameValue = [defaultName + "_" + str(i) for i in range(total)] # Name of the ports on memory
-        self.portValue = [1 for i in range(total)]  # Size of the ports on memory
+        self.lineEdit = [] # Name of the ports on memory
+        self.spinBox = []  # Size of the ports on memory
+
+        self.widgetLayout = QVBoxLayout()
 
         for i in range(total):
             widget = self.generateWidget(i)
             self.widgetLayout.addWidget(widget)
 
+        # TODO: Add Spacer
+
         self.setLayout(self.widgetLayout)
 
     def getInfo(self):
-        return [(self.nameValue[i],self.portValue[i]) for i in range(self.total)]
+        return [(self.lineEdit[i].text(),self.spinBox[i].value()) for i in range(self.total)]
 
     def updateName(self,index,name):
         self.nameValue[index] = name
@@ -41,11 +45,15 @@ class PortWidget(QWidget):
     def generateWidget(self,index):
         label = QLabel()
         label.setText("Port %d:"%(index))
+
         lineEdit = QLineEdit()
-        lineEdit.setText(self.nameValue[index])
+        lineEdit.setText("%s_%d"%(self.defaultName,index))
+        self.lineEdit.append(lineEdit)
+
         spinBox = QSpinBox()
         spinBox.setMinimum(1)
         spinBox.setValue(1)
+        self.spinBox.append(spinBox)
 
         curWidget = QWidget()
         portLayout = QHBoxLayout()
