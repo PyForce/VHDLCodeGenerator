@@ -46,10 +46,7 @@ class IProject:
         except:pass
         try:os.mkdir(vhdlDir+"\\"+proj)
         except:pass
-        # print(self.dir + "\\" + self.name)
         f = open(self.dir + "\\" + self.name,"wb")
-        # f.write(b"asdfsadf")
-        # print("YA ESCRIBI")
         pickle.dump(self.system,f)
         f.close()
 

@@ -7,8 +7,6 @@
 
 __author__ = "BlakeTeam"
 
-# TODO: Comment system (Comments & Doc are different things)
-
 from lib.Block import Block as _Block
 from lib.Connection import Connection as _Connection
 

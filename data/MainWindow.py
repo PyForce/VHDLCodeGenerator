@@ -9,6 +9,7 @@ __author__ = "BlakeTeam"
 
 import os
 import pickle
+import _pickle
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -46,12 +47,46 @@ class MainWindow(QMainWindow):
         self.ui.Explorer.closeEvent = lambda event: self.ui.actionExplorer.toggle()
 
         self.ui.action_New_System.triggered.connect(self.create)
+        self.ui.action_Load.triggered.connect(self.load)
         self.ui.tabExplorer.tabCloseRequested.connect(self.removeTab)
         self.ui.tabExplorer.currentChanged.connect(self.changeTab)
 
         # Tree Widget
         self.ui.explorerTree.setHeaderLabels(["Project Explorer"])
         self.ui.explorerTree.itemDoubleClicked.connect(self.projectSelected)
+
+    def load(self):
+        directory = os.getenv("USERPROFILE")
+        if os.path.exists(directory + "\\VHDL Code Generator\\Projects"):
+            dialog = QFileDialog(self,"Loading...",directory + "\\VHDL Code Generator\\Projects")
+        else:
+            dialog = QFileDialog(self,"Loading",directory)
+        dialog.show()
+        dialog.fileSelected.connect(self.loadFile)
+
+    def loadFile(self,file):
+        try:
+            project = IProject.load(file)
+            if project.name in self.projects:
+                print("YA EXISTE")
+            else:
+                name = project.name.split('.')[0]
+                self.dynamicProjectTable.append(project)
+                self.projects[name] = project
+                self.currentProject = project
+
+                self.ui.tabExplorer.addTab(project.view,name)
+
+                # Creating element in the explorer Tree
+                item = QTreeWidgetItem()
+                item.setText(0,name)
+                self.ui.explorerTree.addTopLevelItem(item)
+        except _pickle.UnpicklingError:
+            message = QMessageBox(self)
+            message.setText("The file format is not correct.\n"+file)
+            message.exec()
+
+
 
     def projectSelected(self,item,column):
         project = self.projects[item.text(0)]
