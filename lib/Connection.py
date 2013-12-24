@@ -12,7 +12,7 @@ from lib import *
 class Connection:
     def __init__(self, out_block, ind_output, in_block, ind_input, system):
         """ Structure that handles the links between two Blocks(Ports)
-            Each Connection has a name(string) that is given by default for the system.
+            Each Connection has a name(string) that is given by default.
 
         :Block out_block:   Output block
         :Int ind_output:    Port index in the output block

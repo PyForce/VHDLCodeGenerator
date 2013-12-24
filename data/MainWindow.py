@@ -47,7 +47,8 @@ class MainWindow(QMainWindow):
         """
         # TODO: This is a test code, here is when we set the new current project
         try:
-            print(tab)
+            # print(tab)
+            pass
             # self.currentView = self.tabWidget.widget(self.tabWidget.currentIndex()).layout().itemAt(0).widget()   # Current View
             # system = _System("main",(2,3),(5,))
             # self.currentView.scene().addItem(QSystem(system))

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>378</width>
-    <height>426</height>
+    <height>143</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,69 +75,6 @@
         </layout>
        </item>
       </layout>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item>
-      <widget class="QFrame" name="inputFrame">
-       <property name="frameShape">
-        <enum>QFrame::WinPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_6">
-        <item>
-         <widget class="QSpinBox" name="spinBox_3"/>
-        </item>
-        <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Expanding</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>224</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QFrame" name="outputFrame">
-       <property name="frameShape">
-        <enum>QFrame::WinPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_7">
-        <item>
-         <widget class="QSpinBox" name="spinBox_4"/>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>224</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </widget>
      </item>
     </layout>
    </item>
