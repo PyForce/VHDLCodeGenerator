@@ -36,8 +36,8 @@ class System:
         self.system_output.setName("SystemOutput")
 
         self.input_info = input_info
-        self.input_names = [name for name,size in input_info]
         self.output_info = output_info
+        self.input_names = [name for name,size in input_info]
         self.output_names = [name for name,size in output_info]
 
     def __getitem__(self, name):
@@ -60,7 +60,6 @@ class System:
 
     def connect(self,output_block,ind_output,input_block,ind_input):
         """
-
         :param output_block:
         :param ind_output:
         :param input_block:

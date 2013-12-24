@@ -14,7 +14,7 @@ from PyQt4 import uic
 from data.PortConfigurationWindow import *
 
 class NProjectWindow(QWidget):
-    def __init__(self, main):
+    def __init__(self, main, project=None):
         super().__init__()
         self.initializeUI()
         self.main = main

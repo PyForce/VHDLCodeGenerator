@@ -5,6 +5,8 @@
 #   LICENSE:   GNU-GPL V3
 #-------------------------------------------------------------------------------
 
+# .vcgproj -> VHDL Code Generator Project
+
 __author__ = "BlakeTeam"
 
 import sys
@@ -12,6 +14,8 @@ import os
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
+asdfWIDT = 10
 
 data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'data'))
 lib_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'))

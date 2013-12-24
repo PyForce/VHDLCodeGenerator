@@ -23,7 +23,7 @@ class Block:
         self.output_ports = [Port("out"+str(i),output_vector[i],OUT) for i in range(len(output_vector))]
 
         self.system = system
-        self.name = self.get_name(self)
+        self.name = self.get_name()
 
     def get_name(self):
         """ Return a valid name for the block.

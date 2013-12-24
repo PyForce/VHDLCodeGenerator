@@ -7,6 +7,9 @@
 
 __author__ = "BlakeTeam"
 
+import os
+import pickle
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
@@ -16,7 +19,8 @@ from lib.Block import *
 from lib.Connection import *
 
 from visual.SystemVisual import *
-from NewProject import *
+from data.NewProject import *
+from lib.ProjectInterface import *
 
 WIDTH = 200
 HEIGHT = 200
@@ -29,6 +33,8 @@ class MainWindow(QMainWindow):
         self.projects = {}              # All projects {string dirName: IProject project }
         self.dynamicProjectTable = {}   # All projects opened (on tabs) {int tabIndex: IProject project }
         self.currentProject = None      # Project that is being used on each moment
+
+        self.defaultDirectory = os.getenv("USERPROFILE") + r"\VHDL Code Generator\Projects"
 
     def initializeUI(self):
         """ Initialize all graphics components of the Main Window.
@@ -66,4 +72,12 @@ class MainWindow(QMainWindow):
         projectCreator.show()
 
     def createProject(self,name,input_info,output_info):
-        print("Creating Project")
+        directory = self.defaultDirectory + "\\" + name + ".vcgproj"
+        project = IProject(directory,input_info,output_info)
+        project.save()
+
+        self.dynamicProjectTable[len(self.projects)] = project
+        self.projects[name] = project
+        self.currentProject = project
+
+

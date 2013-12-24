@@ -32,7 +32,7 @@ class Connection:
 
         self.size = out_block.output_ports[ind_output].size
 
-        self.name = self.get_name(self)
+        self.name = self.get_name()
 
     def get_name(self):
         """ Return a valid name for the block.

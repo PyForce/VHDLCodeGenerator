@@ -1,17 +1,7 @@
-#-------------------------------------------------------------------------------
-# Name:       __init__.py
-# Project:    Polygon Generator
-# Purpose:     
 #
-# Created:     <23/12/13-17:49>
-#-------------------------------------------------------------------------------
+#   PROJECT:   VHDL Code Generator
+#   NAME:      data Modules
+#
 
-__author__ = 'Marx'
-
-
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    main()
+WIDTH = 200
+HEIGHT = 200
