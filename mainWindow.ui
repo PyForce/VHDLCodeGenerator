@@ -47,6 +47,7 @@
     </property>
     <addaction name="action_New_System"/>
     <addaction name="action_Save"/>
+    <addaction name="actionSave_All"/>
     <addaction name="action_Load"/>
     <addaction name="separator"/>
     <addaction name="action_Export"/>
@@ -183,25 +184,14 @@
     <string>Explorer</string>
    </property>
   </action>
+  <action name="actionSave_All">
+   <property name="text">
+    <string>Save &amp;All</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>action_Close</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>363</x>
-     <y>255</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>action_Block_Box</sender>
    <signal>toggled(bool)</signal>

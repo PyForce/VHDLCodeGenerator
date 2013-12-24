@@ -23,9 +23,6 @@ from visual.SystemVisual import *
 from data.NewProject import *
 from lib.ProjectInterface import *
 
-WIDTH = 200
-HEIGHT = 200
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -56,11 +53,10 @@ class MainWindow(QMainWindow):
         self.ui.explorerTree.itemDoubleClicked.connect(self.projectSelected)
 
     def load(self):
-        directory = os.getenv("USERPROFILE")
-        if os.path.exists(directory + "\\VHDL Code Generator\\Projects"):
-            dialog = QFileDialog(self,"Loading...",directory + "\\VHDL Code Generator\\Projects")
+        if os.path.exists(self.defaultDirectory):
+            dialog = QFileDialog(self,"Loading...",self.defaultDirectory)
         else:
-            dialog = QFileDialog(self,"Loading",directory)
+            dialog = QFileDialog(self,"Loading",os.getenv("USERPROFILE"))
         dialog.show()
         dialog.fileSelected.connect(self.loadFile)
 
@@ -85,8 +81,6 @@ class MainWindow(QMainWindow):
             message = QMessageBox(self)
             message.setText("The file format is not correct.\n"+file)
             message.exec()
-
-
 
     def projectSelected(self,item,column):
         project = self.projects[item.text(0)]

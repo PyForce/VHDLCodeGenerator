@@ -8,11 +8,12 @@
 __author__ = "BlakeTeam"
 
 from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-from data.MainWindow import *
+from data import *
 
 class QSystem(QGraphicsItem):
-    COLOR = 0,0,100,100 # Red, Green, Blue, Alpha
+    COLOR = 0,100,100,30 # Red, Green, Blue, Alpha
 
     def __init__(self, system, parent = None):
         """ QGraphicsItem that represent the system of the current project.

@@ -5,7 +5,7 @@
 #   LICENSE:   GNU-GPL V3
 #-------------------------------------------------------------------------------
 
-# .vcgproj -> VHDL Code Generator Project
+# .vcgp -> VHDL Code Generator Project
 
 __author__ = "BlakeTeam"
 

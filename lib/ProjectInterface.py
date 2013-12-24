@@ -10,9 +10,11 @@ __author__ = "BlakeTeam"
 import os.path
 import pickle
 
-from lib.System import System as _System
 from data.MainWindow import *
 from data import *
+from lib.System import System as _System
+from visual import *
+# from visual.SystemVisual import mySys as _mySys
 
 class IProject:
     def __init__(self,path,input_vector,output_vector):
@@ -28,7 +30,7 @@ class IProject:
         self.scene = QGraphicsScene()
         self.view = QGraphicsView()
         self.view.setScene(self.scene)
-        self.initializeView(self.view) #TODO: Test the view initializer(wheel event)
+        self.initializeView(self.view)
 
     @classmethod
     def load(cls,path):
@@ -53,16 +55,17 @@ class IProject:
     def initializeView(self,view):
         """ Initialize all QGraphicsView components.
         """
-        scene = QGraphicsScene()
-        view.setScene(scene)
+        self.scene = QGraphicsScene()
+        view.setScene(self.scene)
 
         def view_wheelEvent(event):
             if event.delta() > 0:
                 view.scale(1.25,1.25)
-                print("Scaling up")
             else:
                 view.scale(0.8,0.8)
-                print("Scaling down")
 
         view.setSceneRect(-WIDTH/2,-HEIGHT/2,WIDTH,HEIGHT)
         view.wheelEvent = view_wheelEvent
+
+        sysVis = QSystem(self.system)
+        self.scene.addItem(sysVis)
