@@ -22,10 +22,8 @@ class QSystem(QGraphicsItem):
             & a rectangle that enclose the area (pure esthetically)
         """
         super().__init__(parent)
-        self.setFlag(QGraphicsItem.ItemIsMovable)
-        self.setCursor(Qt.OpenHandCursor)
         self.system = system
-        self.rect = QRectF(-4*WIDTH/10,-4*HEIGHT/10,4*WIDTH/5,4*HEIGHT/5)
+        self.rect = QRectF(-WIDTH/2.0, -HEIGHT/2.0, WIDTH, HEIGHT)
 
     def boundingRect(self):
         return self.rect.adjusted(-QSystem.PORTLEN-1,1,QSystem.PORTLEN+2,2)
@@ -37,12 +35,9 @@ class QSystem(QGraphicsItem):
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
-        self.setCursor(Qt.ClosedHandCursor)
 
     def mouseReleaseEvent(self, event):
         super().mouseReleaseEvent(event)
-        self.setCursor(Qt.OpenHandCursor)
-        self.system.screenPos = (self.pos().x(), self.pos().y())
 
     def paint(self,painter,styleOptionGraphicsItem,widget):
         InputBlock = self.system.system_input
@@ -56,12 +51,18 @@ class QSystem(QGraphicsItem):
         painter.fillRect(self.rect, QColor(*QSystem.COLOR))
 
         # Drawing input ports
+
         for i in range(len(InputBlock.input_ports)):
-            line = QLine(-4*WIDTH/10.0 - pl, di*(i + 1) - HEIGHT/2.0, -4*WIDTH/10.0, di*(i + 1) - HEIGHT/2.0)
-            painter.drawLine(line)
-            print("caca1")
+            painter.drawLine(-WIDTH/2.0 - pl, di*(i + 1) - HEIGHT/2.0, -WIDTH/2.0, di*(i + 1) - HEIGHT/2.0)
+            if InputBlock.input_ports[i].size > 1:
+                painter.drawLine(-WIDTH/2.0 - pl/4.0, di*(i + 1) - HEIGHT/2.0 - di/4.0, -WIDTH/2.0 - 3*pl/4.0, di*(i + 1) - HEIGHT/2.0 + di/4.0)
+                #painter.drawRect(-WIDTH/2.0 - pl/4.0, di*(i + 1) - HEIGHT/2.0 - di/2.0,4, 4)
+                #painter.drawRect(-WIDTH/2.0 - pl/4.0, di*(i + 1) - HEIGHT/2.0 - 3*di/4.0, -WIDTH/2.0, di*(i + 1) - HEIGHT/2.0 - di/2)
+                #painter.drawText(QRectF(-WIDTH/2.0 - pl/4.0, di*(i + 1) - HEIGHT/2.0 - 3*di/4.0, -WIDTH/2.0, di*(i + 1) - HEIGHT/2.0 - di/2), Qt.AlignRight, str(InputBlock.input_ports[i].size))
 
         # Drawing output ports
         for i in range(len(OutputBlock.output_ports)):
-            print("caca2")
-            painter.drawLine(4*WIDTH/10.0 ,do*(i + 1) - HEIGHT / 2.0, 4*WIDTH/10.0 + pl, do*(i + 1) - HEIGHT / 2.0)
+            painter.drawLine(WIDTH/2.0, do*(i + 1) - HEIGHT/2.0, WIDTH/2.0 + pl, do*(i + 1) - HEIGHT/2.0)
+            if OutputBlock.output_ports[i].size > 1:
+                painter.drawLine(WIDTH/2.0 + 3*pl/4, do*(i + 1) - HEIGHT/2.0 - do/4.0, WIDTH/2.0 + pl/4, do*(i + 1) - HEIGHT/2.0 + do/4.0)
+                #painter.drawText(QRectF(), Qt.AlignLeft, str(OutputBlock.output_ports[i].size))

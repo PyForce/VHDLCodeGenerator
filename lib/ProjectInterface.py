@@ -33,6 +33,7 @@ class IProject:
         self.system = _System(realName,input_vector,output_vector)
         self.scene = QGraphicsScene()
         self.view = QGraphicsView()
+        self.view.setDragMode(QGraphicsView.ScrollHandDrag)
         self.view.setScene(self.scene)
         self.initializeView(self.view)
 
@@ -71,5 +72,5 @@ class IProject:
             else:
                 view.scale(0.8,0.8)
 
-        view.setSceneRect(-WIDTH/2,-HEIGHT/2,WIDTH,HEIGHT)
+        #view.setSceneRect(-WIDTH/2,-HEIGHT/2,WIDTH,HEIGHT)
         view.wheelEvent = view_wheelEvent
