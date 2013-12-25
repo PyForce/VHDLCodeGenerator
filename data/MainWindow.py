@@ -36,10 +36,13 @@ class MainWindow(QMainWindow):
 
         self.defaultDirectory = os.getenv("USERPROFILE") + r"\VHDL Code Generator\Projects"
 
+
     def initializeUI(self):
         """ Initialize all graphics components of the Main Window.
         """
         self.ui = uic.loadUi('mainWindow.ui', self)
+
+        self.loadIcons()
 
         # Toggling dock widgets on closing
         self.ui.BlockBox.closeEvent = lambda event: self.ui.action_Block_Box.toggle()
@@ -59,6 +62,13 @@ class MainWindow(QMainWindow):
         # Explorer
         self.ui.explorerTree.setHeaderLabels(["Project Explorer"])
         self.ui.explorerTree.itemDoubleClicked.connect(self.projectSelected)
+
+    def loadIcons(self):
+        self.standardIco = QIcon("resources\\standard.ico")
+        self.parameterIco = QIcon("resources\\parameter.ico")
+        self.dynamicIco = QIcon("resources\\dynamic.ico")
+        self.folderIco = QIcon("resources\\folder.ico")
+        self.projectIco = QIcon("resources\\project.png")
 
     @staticmethod
     def isParameterBlock(path):
@@ -98,6 +108,7 @@ class MainWindow(QMainWindow):
             if os.path.isdir(i):
                 os.chdir(i)
                 child = QTreeWidgetItem([i])
+                child.setIcon(0,self.folderIco)
                 child.path = None
                 if self.__loadBlockFromDir__(child,os.path.join(path,i)):
                     dirItems.append(child)
@@ -133,9 +144,6 @@ class MainWindow(QMainWindow):
 
     # TODO: We have to set the reference to the block. It  isn't done.
     def loadBlock(self):
-        self.standardIco = QIcon("resources\\standard.ico")
-        self.parameterIco = QIcon("resources\\parameter.ico")
-        self.dynamicIco = QIcon("resources\\dynamic.ico")
 
         os.chdir("blocks")
 
@@ -144,6 +152,7 @@ class MainWindow(QMainWindow):
             if os.path.isdir(i):
                 os.chdir(i)
                 item = QTreeWidgetItem([i])
+                item.setIcon(0,self.folderIco)
                 item.path = None
                 if self.__loadBlockFromDir__(item,os.path.join(path,i)):
                     self.ui.blockTree.addTopLevelItem(item)
@@ -176,6 +185,7 @@ class MainWindow(QMainWindow):
                 # Creating element in the explorer Tree
                 item = QTreeWidgetItem()
                 item.setText(0,name)
+                item.setIcon(0,self.projectIco)
                 self.ui.explorerTree.addTopLevelItem(item)
 
         except _pickle.UnpicklingError:
@@ -233,7 +243,9 @@ class MainWindow(QMainWindow):
         # Creating element in the explorer Tree
         item = QTreeWidgetItem()
         item.setText(0,name)
+        item.setIcon(0,self.projectIco)
         self.ui.explorerTree.addTopLevelItem(item)
+
 
         # # Drawing project
         # self.drawProject(project)

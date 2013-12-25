@@ -72,5 +72,6 @@ class IProject:
             else:
                 view.scale(0.8,0.8)
 
-        #view.setSceneRect(-WIDTH/2,-HEIGHT/2,WIDTH,HEIGHT)
+        ADJUST = 50
+        view.setSceneRect(-WIDTH/2-ADJUST,-HEIGHT/2-ADJUST,WIDTH+2*ADJUST,HEIGHT+2*ADJUST)
         view.wheelEvent = view_wheelEvent

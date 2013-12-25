@@ -13,7 +13,7 @@ from data import *
 # from data.MainWindow import *
 
 class QSystem(QGraphicsItem):
-    COLOR = 0,0,100,100 # Red, Green, Blue, Alpha
+    COLOR = 0,200,30,20 # Red, Green, Blue, Alpha
     PORTLEN = 20
 
     def __init__(self, system, parent = None):

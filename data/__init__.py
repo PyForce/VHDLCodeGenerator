@@ -7,5 +7,5 @@ from .MainWindow import *
 from .NewProject import *
 from .PortConfigurationWindow import *
 
-WIDTH = 200
+WIDTH = 400
 HEIGHT = 200
