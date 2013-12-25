@@ -51,7 +51,7 @@ class MainWindow(QMainWindow):
         ### Tree Widget ###
 
         # Blocks
-        self.ui.blockTree.setHeaderLabels(["Blocks","Type"])
+        self.ui.blockTree.setHeaderLabels(["Blocks"])
         self.loadBlock()
 
         # Explorer
@@ -89,6 +89,8 @@ class MainWindow(QMainWindow):
 
     def __loadBlockFromDir__(self,item,path):
         files = False   # Return true if is a file, or is a directory with files inside
+        dirItems = []
+        fileItems = []
         for i in os.listdir():
             curPath = os.path.join(path,i)
             if os.path.isdir(i):
@@ -96,26 +98,35 @@ class MainWindow(QMainWindow):
                 child = QTreeWidgetItem([i])
                 child.path = None
                 if self.__loadBlockFromDir__(child,os.path.join(path,i)):
-                    item.addChild(child)
+                    dirItems.append(child)
+                    # item.addChild(child)
                     files = True
                 os.chdir("..")
             else:
                 name = os.path.splitext(i)[0]
                 child = QTreeWidgetItem([name])
                 if self.isStandardBlock(curPath):
-                    item.addChild(child)
-                    child.setIcon(1,self.standardIco)
+                    fileItems.append((child,self.standardIco))
+                    # item.addChild(child)
+                    # child.setIcon(0,self.standardIco)
                     files = True
                 elif self.isParameterBlock(curPath):
-                    item.addChild(child)
-                    child.setIcon(1,self.parameterIco)
+                    fileItems.append((child,self.parameterIco))
+                    # item.addChild(child)
+                    # child.setIcon(0,self.parameterIco)
                     files = True
                 else:
                     mod = self.isDynamicBlock(curPath)
                     if mod:
-                        item.addChild(child)
-                        child.setIcon(1,self.dynamicIco)
+                        fileItems.append((child,self.dynamicIco))
+                        # item.addChild(child)
+                        # child.setIcon(0,self.dynamicIco)
                         files = True
+        for i in dirItems:
+            item.addChild(i)
+        for i,j in fileItems:
+            item.addChild(i)
+            i.setIcon(0,j)
         return files
 
     # TODO: We have to set the reference to the block. It  isn't done.
