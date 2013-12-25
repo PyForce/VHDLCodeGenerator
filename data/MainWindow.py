@@ -186,14 +186,13 @@ class MainWindow(QMainWindow):
             #TODO: I DON'T KNOW HOW TO SET FOCUS TO THE GIVEN TAB
             self.ui.tabExplorer.setTabEnabled(index,True)
         except ValueError:
-            self.dynamicProjectTable.append(project.view)
+            self.dynamicProjectTable.append(project)
             self.ui.tabExplorer.addTab(project.view,project.name.split('.')[0])
 
     def removeTab(self,tab):
-        if tab != 0:    # Tab 0 is not closable
-            print("REMOVING TAB %d"%tab)
-            self.dynamicProjectTable.remove(self.dynamicProjectTable[tab])
-            self.ui.tabExplorer.removeTab(tab)
+        print("REMOVING TAB %d"%tab)
+        self.dynamicProjectTable.remove(self.dynamicProjectTable[tab])
+        self.ui.tabExplorer.removeTab(tab)
 
     def changeTab(self,tab):
         """ Action that is executed when the tab is changed.
