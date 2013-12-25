@@ -5,7 +5,8 @@
 #   LICENSE:   GNU-GPL V3
 #-------------------------------------------------------------------------------
 
-# .vcgp -> VHDL Code Generator Project
+# .vcgp -> VHDL Code Generator Project,
+# .vcgproj is a bad formating
 
 __author__ = "BlakeTeam"
 
