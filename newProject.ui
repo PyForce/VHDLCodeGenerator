@@ -112,6 +112,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>acceptButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+  <tabstop>name</tabstop>
+  <tabstop>inputPorts</tabstop>
+  <tabstop>outputPorts</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

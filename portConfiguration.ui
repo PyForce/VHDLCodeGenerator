@@ -124,6 +124,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>acceptButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+  <tabstop>inputScroll</tabstop>
+  <tabstop>outputScroll</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

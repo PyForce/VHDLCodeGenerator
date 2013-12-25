@@ -7,7 +7,8 @@
 
 __author__ = "BlakeTeam"
 
-from lib import *
+IN = 1
+OUT = 0
 
 class Block:
     def __init__(self, input_vector, output_vector, system):
@@ -24,6 +25,9 @@ class Block:
 
         self.system = system
         self.name = self.get_name()
+
+        # Position on the screen to visualize the block
+        self.screenPos = (0,0)
 
     def get_name(self):
         """ Return a valid name for the block.

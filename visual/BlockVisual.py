@@ -23,6 +23,7 @@ class QBlock(QGraphicsItem):
         """
         super().__init__(parent)
         self.block = block
+        self.setPos(*block.screenPos)
         self.height = QBlock.DX*(max(len(self.block.input_ports), len(self.block.output_ports))+1)
         # self.width = self.height/
         self.width = 40
@@ -31,6 +32,7 @@ class QBlock(QGraphicsItem):
         # self.rectf = QRectF(-QBlock.PORT_SIZE,0,QBlock.PORT_SIZE+self.width,self.height).adjusted(0.1,0.1,0.1,0.1)
 
         self.setFlag(QGraphicsItem.ItemIsMovable)
+        self.setCursor(Qt.OpenHandCursor)
 
     def boundingRect(self):
         return self.rect
@@ -39,6 +41,15 @@ class QBlock(QGraphicsItem):
         path = QPainterPath()
         path.addRect(self.rect)
         return path
+
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+        self.setCursor(Qt.ClosedHandCursor)
+
+    def mouseReleaseEvent(self, event):
+        super().mouseReleaseEvent(event)
+        self.setCursor(Qt.OpenHandCursor)
+        self.block.screenPos = (self.pos().x(), self.pos().y())
 
     def paint(self,painter,styleOptionGraphicsItem,widget):
         painter.fillRect(0,0,self.width,self.height,QColor(*QBlock.COLOR))

@@ -16,13 +16,15 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
 
-from lib.System import System as _System
-from lib.Block import *
-from lib.Connection import *
-
-from visual.SystemVisual import *
-from data.NewProject import *
-from lib.ProjectInterface import *
+from visual import *
+from lib import *
+# from lib.System import System as _System
+# from lib.Block import *
+# from lib.Connection import *
+#
+# from visual.SystemVisual import *
+# from data.NewProject import *
+# from lib.ProjectInterface import *
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -169,11 +171,13 @@ class MainWindow(QMainWindow):
                 self.currentProject = project
 
                 self.ui.tabExplorer.addTab(project.view,name)
+                self.ui.tabExplorer.setCurrentWidget(project.view)
 
                 # Creating element in the explorer Tree
                 item = QTreeWidgetItem()
                 item.setText(0,name)
                 self.ui.explorerTree.addTopLevelItem(item)
+
         except _pickle.UnpicklingError:
             message = QMessageBox(self)
             message.setText("The file format is not correct.\n"+file)
@@ -184,10 +188,12 @@ class MainWindow(QMainWindow):
         try:
             index = self.dynamicProjectTable.index(project)
             #TODO: I DON'T KNOW HOW TO SET FOCUS TO THE GIVEN TAB
-            self.ui.tabExplorer.setTabEnabled(index,True)
+            # self.ui.tabExplorer.setTabEnabled(index,True)
+            self.ui.tabExplorer.setCurrentIndex(index)
         except ValueError:
             self.dynamicProjectTable.append(project)
             self.ui.tabExplorer.addTab(project.view,project.name.split('.')[0])
+            self.ui.tabExplorer.setCurrentWidget(project.view)
 
     def removeTab(self,tab):
         print("REMOVING TAB %d"%tab)
@@ -222,8 +228,12 @@ class MainWindow(QMainWindow):
         self.currentProject = project
 
         self.ui.tabExplorer.addTab(project.view,name)
+        self.ui.tabExplorer.setCurrentWidget(project.view)
 
         # Creating element in the explorer Tree
         item = QTreeWidgetItem()
         item.setText(0,name)
         self.ui.explorerTree.addTopLevelItem(item)
+
+        # # Drawing project
+        # self.drawProject(project)

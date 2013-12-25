@@ -7,8 +7,9 @@
 
 __author__ = "BlakeTeam"
 
-from lib.Block import Block as _Block
-from lib.Connection import Connection as _Connection
+# from lib import *
+from .Block import Block as _Block
+# from lib.Connection import Connection as _Connection
 
 IN = 1
 OUT = 0
@@ -28,9 +29,9 @@ class System:
 
         self.block = []         # Block list of the system
         self.connections = []   # Connection list of the system
-        self.system_input = _Block((),[size for name,size in input_info],self)
+        self.system_input = _Block([size for name,size in input_info],(),self)
         self.system_input.setName("SystemInput")
-        self.system_output = _Block([size for name,size in output_info],(),self)
+        self.system_output = _Block((),[size for name,size in output_info],self)
         self.system_output.setName("SystemOutput")
 
         self.input_info = input_info
