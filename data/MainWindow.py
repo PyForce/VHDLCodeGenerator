@@ -8,6 +8,7 @@
 __author__ = "BlakeTeam"
 
 import os
+import importlib
 import pickle
 import _pickle
 
@@ -44,15 +45,97 @@ class MainWindow(QMainWindow):
         self.ui.Explorer.closeEvent = lambda event: self.ui.actionExplorer.toggle()
 
         self.ui.action_New_System.triggered.connect(self.create)
-        self.ui.action_Load.triggered.connect(self.load)
+        self.ui.action_Load.triggered.connect(self.loadProject)
         self.ui.tabExplorer.tabCloseRequested.connect(self.removeTab)
         self.ui.tabExplorer.currentChanged.connect(self.changeTab)
 
-        # Tree Widget
+        ### Tree Widget ###
+
+        # Blocks
+        self.ui.blockTree.setHeaderLabels(["Blocks","Type"])
+        self.loadBlock()
+
+        # Explorer
         self.ui.explorerTree.setHeaderLabels(["Project Explorer"])
         self.ui.explorerTree.itemDoubleClicked.connect(self.projectSelected)
 
-    def load(self):
+    @staticmethod
+    def isParameterBlock(path):
+        """ Check if the file refers to a Parameter block
+        """
+        return os.path.splitext(path)[1] == ".pvb"
+
+    @staticmethod
+    def isStandardBlock(path):
+        """ Check if the file refers to a standard block
+        """
+        return os.path.splitext(path)[1] == ".svb"
+
+    @staticmethod
+    def isDynamicBlock(path):
+        """ Check if the file refers to a dynamic block
+            It returns the module if it is a dynamic block
+        """
+        if os.path.splitext(path)[1] == ".py":
+            print(path)
+            name = os.path.splitext(os.path.split(path)[1])[0]
+            print(name)
+            mod = importlib.__import__(name)
+            try:
+                if mod.__isBlock__:
+                    return mod
+            except:
+                return False
+        return False
+
+    def __loadBlockFromDir__(self,item,path):
+        files = False   # Return true if is a file, or is a directory with files inside
+        for i in os.listdir():
+            curPath = os.path.join(path,i)
+            if os.path.isdir(i):
+                os.chdir(i)
+                child = QTreeWidgetItem([i])
+                child.path = None
+                if self.__loadBlockFromDir__(child,os.path.join(path,i)):
+                    item.addChild(child)
+                    files = True
+                os.chdir("..")
+            else:
+                name = os.path.splitext(i)[0]
+                child = QTreeWidgetItem([name])
+                if self.isStandardBlock(curPath):
+                    item.addChild(child)
+                    child.setIcon(1,self.standardIco)
+                    files = True
+                elif self.isParameterBlock(curPath):
+                    item.addChild(child)
+                    child.setIcon(1,self.parameterIco)
+                    files = True
+                else:
+                    mod = self.isDynamicBlock(curPath)
+                    if mod:
+                        item.addChild(child)
+                        child.setIcon(1,self.dynamicIco)
+                        files = True
+        return files
+
+    def loadBlock(self):
+        self.standardIco = QIcon("resources\\standard.ico")
+        self.parameterIco = QIcon("resources\\parameter.ico")
+        self.dynamicIco = QIcon("resources\\dynamic.ico")
+
+        os.chdir("blocks")
+        path = os.getcwd()
+        for i in os.listdir():
+            if os.path.isdir(i):
+                os.chdir(i)
+                item = QTreeWidgetItem([i])
+                item.path = None
+                if self.__loadBlockFromDir__(item,os.path.join(path,i)):
+                    self.ui.blockTree.addTopLevelItem(item)
+                os.chdir("..")
+
+    def loadProject(self):
         if os.path.exists(self.defaultDirectory):
             dialog = QFileDialog(self,"Loading...",self.defaultDirectory)
         else:
