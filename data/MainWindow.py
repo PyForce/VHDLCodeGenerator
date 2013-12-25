@@ -28,7 +28,6 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initializeUI()
-
         self.projects = {}                  # All projects {string dirName: IProject project }
         self.dynamicProjectTable = [None]   # All projects opened (on tabs) {int tabIndex: IProject project }
         self.currentProject = None          # Project that is being used on each moment
@@ -119,12 +118,14 @@ class MainWindow(QMainWindow):
                         files = True
         return files
 
+    # TODO: We have to set the reference to the block. It  isn't done.
     def loadBlock(self):
         self.standardIco = QIcon("resources\\standard.ico")
         self.parameterIco = QIcon("resources\\parameter.ico")
         self.dynamicIco = QIcon("resources\\dynamic.ico")
 
         os.chdir("blocks")
+
         path = os.getcwd()
         for i in os.listdir():
             if os.path.isdir(i):
@@ -134,6 +135,8 @@ class MainWindow(QMainWindow):
                 if self.__loadBlockFromDir__(item,os.path.join(path,i)):
                     self.ui.blockTree.addTopLevelItem(item)
                 os.chdir("..")
+
+        os.chdir("..")
 
     def loadProject(self):
         if os.path.exists(self.defaultDirectory):
@@ -214,4 +217,3 @@ class MainWindow(QMainWindow):
         item = QTreeWidgetItem()
         item.setText(0,name)
         self.ui.explorerTree.addTopLevelItem(item)
-
