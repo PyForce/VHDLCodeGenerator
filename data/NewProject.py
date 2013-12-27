@@ -27,8 +27,6 @@ class NProjectWindow(QWidget):
         self.ui.name.textChanged.connect(self.textChanged)
         self.ui.acceptButton.clicked.connect(self.accept)
         self.ui.cancelButton.clicked.connect(self.cancel)
-        # self.ui.inputPorts.valueChanged.connect(self.inputPortsUpdate)
-        # self.ui.outputPorts.valueChanged.connect(self.outputPortsUpdate)
 
     def accept(self):
         if self.valid:

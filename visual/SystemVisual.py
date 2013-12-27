@@ -8,6 +8,7 @@
 __author__ = "BlakeTeam"
 
 from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 from data import *
 # from data.MainWindow import *

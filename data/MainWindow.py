@@ -18,24 +18,23 @@ from PyQt4 import uic
 
 from visual import *
 from lib import *
-# from lib.System import System as _System
-# from lib.Block import *
-# from lib.Connection import *
-#
-# from visual.SystemVisual import *
-# from data.NewProject import *
-# from lib.ProjectInterface import *
+
+STANDARD_BLOCK = 0
+PARAMETRIC_BLOCK = 1
+DYNAMIC_BLOCK = 2
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.initializeUI()
         self.projects = {}                  # All projects {string dirName: IProject project }
         self.dynamicProjectTable = [None]   # All projects opened (on tabs) {int tabIndex: IProject project }
         self.currentProject = None          # Project that is being used on each moment
 
         self.defaultDirectory = os.getenv("USERPROFILE") + r"\VHDL Code Generator\Projects"
 
+        self.blocks = []    # Reference to the blocks to be loaded. <QItem:Path,Type>
+
+        self.initializeUI()
 
     def initializeUI(self):
         """ Initialize all graphics components of the Main Window.
@@ -43,6 +42,7 @@ class MainWindow(QMainWindow):
         self.ui = uic.loadUi('mainWindow.ui', self)
 
         self.loadIcons()
+        # self.initializeToolBar()
 
         # Toggling dock widgets on closing
         self.ui.BlockBox.closeEvent = lambda event: self.ui.action_Block_Box.toggle()
@@ -57,11 +57,44 @@ class MainWindow(QMainWindow):
 
         # Blocks
         self.ui.blockTree.setHeaderLabels(["Blocks"])
-        self.loadBlock()
+        self.ui.blockTree.itemDoubleClicked.connect(self.blockSelected)
+        self.loadBlocks()
+        print(self.blocks)
 
         # Explorer
         self.ui.explorerTree.setHeaderLabels(["Project Explorer"])
         self.ui.explorerTree.itemDoubleClicked.connect(self.projectSelected)
+
+    # def initializeToolBar(self):
+    #     toolBar = QToolBar(self)
+    #     toolBar.setAllowedAreas(Qt.TopToolBarArea)
+    #     self.layout().addWidget(toolBar)
+
+    def blockSelected(self,item,column):
+        if self.currentProject == None:
+            message = QMessageBox(self)
+            message.setWindowTitle("WARNING")
+            message.setIcon(QMessageBox.Warning)
+            message.setText("There is no selected project")
+            message.exec()
+
+        else:
+            founded = False
+            for _item,path,type,mod in self.blocks:
+                if item == _item:
+                    founded = True
+                    print("LOADING",path)
+                    self.loadBlock(path,type,mod)
+                    break
+            if not founded:
+                print("NO ITEM SELECTED")
+
+    def loadBlock(self,path,type,mod = None):
+        """ Loading selected block to the current system
+        """
+        print(path,type)
+        if type == DYNAMIC_BLOCK:
+            print(mod)
 
     def loadIcons(self):
         self.standardIco = QIcon("resources\\standard.ico")
@@ -88,9 +121,7 @@ class MainWindow(QMainWindow):
             It returns the module if it is a dynamic block
         """
         if os.path.splitext(path)[1] == ".py":
-            print(path)
             name = os.path.splitext(os.path.split(path)[1])[0]
-            print(name)
             mod = importlib.__import__(name)
             try:
                 if mod.__isBlock__:
@@ -118,22 +149,22 @@ class MainWindow(QMainWindow):
             else:
                 name = os.path.splitext(i)[0]
                 child = QTreeWidgetItem([name])
+                #Standard Block
                 if self.isStandardBlock(curPath):
                     fileItems.append((child,self.standardIco))
-                    # item.addChild(child)
-                    # child.setIcon(0,self.standardIco)
+                    self.blocks.append((child,curPath,STANDARD_BLOCK,None))
                     files = True
+                # Parametric Block
                 elif self.isParameterBlock(curPath):
                     fileItems.append((child,self.parameterIco))
-                    # item.addChild(child)
-                    # child.setIcon(0,self.parameterIco)
+                    self.blocks.append((child,curPath,PARAMETRIC_BLOCK,None))
                     files = True
                 else:
                     mod = self.isDynamicBlock(curPath)
+                    # Dynamic Block
                     if mod:
                         fileItems.append((child,self.dynamicIco))
-                        # item.addChild(child)
-                        # child.setIcon(0,self.dynamicIco)
+                        self.blocks.append((child,curPath,DYNAMIC_BLOCK,mod))
                         files = True
         for i in dirItems:
             item.addChild(i)
@@ -143,7 +174,7 @@ class MainWindow(QMainWindow):
         return files
 
     # TODO: We have to set the reference to the block. It  isn't done.
-    def loadBlock(self):
+    def loadBlocks(self):
 
         os.chdir("blocks")
 
@@ -197,8 +228,6 @@ class MainWindow(QMainWindow):
         project = self.projects[item.text(0)]
         try:
             index = self.dynamicProjectTable.index(project)
-            #TODO: I DON'T KNOW HOW TO SET FOCUS TO THE GIVEN TAB
-            # self.ui.tabExplorer.setTabEnabled(index,True)
             self.ui.tabExplorer.setCurrentIndex(index)
         except ValueError:
             self.dynamicProjectTable.append(project)

@@ -11,6 +11,10 @@ IN = 1
 OUT = 0
 
 class Block:
+    """ Description of the block.
+
+        This is the generic block.
+    """
     def __init__(self, input_vector, output_vector, system):
         """ Structure that handles an abstract Block.
             Each block has a name(string) that is given by default for the system.
@@ -41,6 +45,11 @@ class Block:
                 return name
             else:
                 ind += 1
+
+    def generate(self):
+        """ Method to be overridden. It generates the VHDL code.
+        """
+        return  "\n%s\n"%self.name
 
     def __getitem__(self, name):
         """ Find a port for his name.

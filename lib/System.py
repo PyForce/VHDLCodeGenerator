@@ -9,7 +9,7 @@ __author__ = "BlakeTeam"
 
 # from lib import *
 from .Block import Block as _Block
-# from lib.Connection import Connection as _Connection
+from lib.Connection import Connection as _Connection
 
 IN = 1
 OUT = 0

@@ -1,10 +1,11 @@
 #-------------------------------------------------------------------------------
-# Name:       Port Configuration
-# Project:    QTester
-# Purpose:     
+#   PROJECT:   VHDL Code Generator
+#   NAME:      Block visual
 #
-# Created:     <22/12/13-12:10>
+#   LICENSE:   GNU-GPL V3
 #-------------------------------------------------------------------------------
+
+__author__ = "BlakeTeam"
 
 __author__ = 'BlakeTeam'
 
@@ -28,8 +29,6 @@ class PortWidget(QWidget):
         for i in range(total):
             widget = self.generateWidget(i)
             self.widgetLayout.addWidget(widget)
-
-        # TODO: Add Spacer
 
         self.setLayout(self.widgetLayout)
 
