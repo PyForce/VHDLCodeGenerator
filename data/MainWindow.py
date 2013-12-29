@@ -19,7 +19,7 @@ from PyQt4 import uic
 from visual import *
 from lib import *
 
-STANDARD_BLOCK = 0
+STATIC_BLOCK = 0
 PARAMETRIC_BLOCK = 1
 DYNAMIC_BLOCK = 2
 
@@ -93,8 +93,23 @@ class MainWindow(QMainWindow):
         """ Loading selected block to the current system
         """
         print(path,type)
-        if type == DYNAMIC_BLOCK:
-            print(mod)
+
+        if type == STATIC_BLOCK:
+            pass
+        elif type == PARAMETRIC_BLOCK:
+            pass
+        elif type == DYNAMIC_BLOCK:
+            self.loadDynamicBlock(mod)
+
+    def loadDynamicBlock(self,mod):
+        print("Loading Dynamic Block")
+        className = mod.__className__
+        win = mod.__getattribute__(mod.__win__)()
+        win.show()
+
+
+        # block = mod.__getattribute__(className)
+        # block.initializer(self)
 
     def loadIcons(self):
         self.standardIco = QIcon("resources\\standard.ico")
@@ -152,7 +167,7 @@ class MainWindow(QMainWindow):
                 #Standard Block
                 if self.isStandardBlock(curPath):
                     fileItems.append((child,self.standardIco))
-                    self.blocks.append((child,curPath,STANDARD_BLOCK,None))
+                    self.blocks.append((child,curPath,STATIC_BLOCK,None))
                     files = True
                 # Parametric Block
                 elif self.isParameterBlock(curPath):

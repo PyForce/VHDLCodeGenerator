@@ -9,13 +9,14 @@ __author__ = "BlakeTeam"
 
 IN = 1
 OUT = 0
+TEMP = 2
 
 class Block:
     """ Description of the block.
 
         This is the generic block.
     """
-    def __init__(self, input_vector, output_vector, system):
+    def __init__(self, input_vector, output_vector, system, name = None):
         """ Structure that handles an abstract Block.
             Each block has a name(string) that is given by default for the system.
 
@@ -28,7 +29,12 @@ class Block:
         self.output_ports = [Port("out"+str(i),output_vector[i],OUT) for i in range(len(output_vector))]
 
         self.system = system
-        self.name = self.get_name()
+        self.variables = [] # Variables(SIGNALS) to be used on the block
+
+        if name == None:
+            self.name = self.get_name()
+        else:
+            self.setName(name)
 
         # Position on the screen to visualize the block
         self.screenPos = (0,0)
@@ -49,7 +55,24 @@ class Block:
     def generate(self):
         """ Method to be overridden. It generates the VHDL code.
         """
-        return  "\n%s\n"%self.name
+        raise NotImplemented("Generate not implemented")
+
+    def getSignals(self):
+        """ Method to be overridden.
+
+            Return a list of tuple that represent signals of the form:
+            (name, size, type) where type can be IN,OUT,TEMP
+        """
+        signals = []
+
+        for i in self.input_ports:
+            signals.append(i.name,i.size,i.mode)
+        for i in self.output_ports:
+            signals.append(i.name,i.size,i.mode)
+        for i in self.variables:
+            signals.append(i[0],i[1],TEMP)
+
+        return signals
 
     def __getitem__(self, name):
         """ Find a port for his name.
@@ -79,7 +102,10 @@ class Block:
         if name in self.system.block_name:
             raise ValueError("This name already exist")
 
-        self.system.block_name.remove(self.name)
+        try:
+            self.system.block_name.remove(self.name)
+        except ValueError:
+            pass
         self.system.block_name.add(name)
         self.name = name
 
