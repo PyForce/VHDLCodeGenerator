@@ -21,7 +21,7 @@ class Multiplexer(Block):
         PORTS SPECIFICATIONS
     """
     # TODO: Specifications of multiplexer
-    def __init__(self,system,name,numInput,sizeInput,defaultOutput='Z',enabler=True,enablerActiveSymbol = '0'):
+    def __init__(self,system,numInput,sizeInput,defaultOutput='Z',enabler=True,enablerActiveSymbol = '0'):
         """
 
         :param name:
@@ -37,9 +37,10 @@ class Multiplexer(Block):
         self.enablerActiveSymbol = enablerActiveSymbol
         self.enabler = enabler
         self.selBits = len(bin(numInput)) - 2    # Binary Input Selector
+        self.name = "Multiplexer"
 
         input_vector = [sizeInput]*numInput + [self.selBits] + ([1] if enabler else [])
-        super().__init__(input_vector,[sizeInput],system,name)
+        super().__init__(input_vector,[sizeInput],system,self.name)
         self.variables = [("CHOSEN",sizeInput)]
 
     def generate(self):
@@ -69,6 +70,7 @@ class MuxWindow(QWidget):
         defaultOutput = '0' if self.ui.defOut0.isChecked() else ('1' if self.ui.defOut1.isChecked() else 'Z')
 
         self.accept.emit([numInput,sizeInput,defaultOutput,includeEnabler,activeSymbol])
+        self.close()
 
 
 if __name__ == "__main__":

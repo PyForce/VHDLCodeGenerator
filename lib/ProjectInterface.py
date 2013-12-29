@@ -15,10 +15,8 @@ from visual import *
 
 
 from .System import System as _System
-# from lib import *
-# from data.MainWindow import *
-# from lib.System import System as _System
 from visual.SystemVisual import QSystem
+
 
 class IProject:
     def __init__(self,path,input_vector,output_vector):
@@ -73,5 +71,5 @@ class IProject:
                 view.scale(0.8,0.8)
 
         ADJUST = 50
-        view.setSceneRect(-WIDTH/2-ADJUST,-HEIGHT/2-ADJUST,WIDTH+2*ADJUST,HEIGHT+2*ADJUST)
+        # view.setSceneRect(-WIDTH/2-ADJUST,-HEIGHT/2-ADJUST,WIDTH+2*ADJUST,HEIGHT+2*ADJUST)
         view.wheelEvent = view_wheelEvent

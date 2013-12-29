@@ -99,12 +99,20 @@ class Block:
         :String name:      The new name of this block.
         """
         # Check that the new name do not already exist
+
         if name in self.system.block_name:
-            raise ValueError("This name already exist")
+            pos = 2
+            while True:
+                curName = name + "_" + str(pos)
+                if not curName in self.system.block_name:
+                    name = curName
+                    break
+                else:
+                    pos += 1
 
         try:
             self.system.block_name.remove(self.name)
-        except ValueError:
+        except KeyError:
             pass
         self.system.block_name.add(name)
         self.name = name

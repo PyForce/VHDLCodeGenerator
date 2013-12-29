@@ -23,6 +23,9 @@ STATIC_BLOCK = 0
 PARAMETRIC_BLOCK = 1
 DYNAMIC_BLOCK = 2
 
+DEFAULT_MODE = 0    # MOVE & CONNECT MODE
+BLOCK_INSERTION = 1
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -33,6 +36,8 @@ class MainWindow(QMainWindow):
         self.defaultDirectory = os.getenv("USERPROFILE") + r"\VHDL Code Generator\Projects"
 
         self.blocks = []    # Reference to the blocks to be loaded. <QItem:Path,Type>
+
+        self.state = DEFAULT_MODE
 
         self.dynamicBlock = None    # Current loaded dynamic block
         self.parameters = None      # Parameters that receive the current loaded dynamic block
@@ -53,6 +58,7 @@ class MainWindow(QMainWindow):
 
         self.ui.action_New_System.triggered.connect(self.create)
         self.ui.action_Load.triggered.connect(self.loadProject)
+        self.ui.actionDefault.triggered.connect(self.setDefaultMode)
         self.ui.tabExplorer.tabCloseRequested.connect(self.removeTab)
         self.ui.tabExplorer.currentChanged.connect(self.changeTab)
 
@@ -72,6 +78,10 @@ class MainWindow(QMainWindow):
     #     toolBar = QToolBar(self)
     #     toolBar.setAllowedAreas(Qt.TopToolBarArea)
     #     self.layout().addWidget(toolBar)
+
+    def setDefaultMode(self):
+        self.state = DEFAULT_MODE
+        self.ui.actionDefault.setChecked(True)
 
     def blockSelected(self,item,column):
         if self.currentProject == None:
@@ -113,6 +123,8 @@ class MainWindow(QMainWindow):
 
     def loadParameters(self,args):
         self.parameters = args
+        self.state = BLOCK_INSERTION
+        self.ui.actionDefault.setChecked(False)
 
     def loadIcons(self):
         self.standardIco = QIcon("resources\\standard.ico")
@@ -191,7 +203,6 @@ class MainWindow(QMainWindow):
             i.setIcon(0,j)
         return files
 
-    # TODO: We have to set the reference to the block. It  isn't done.
     def loadBlocks(self):
 
         os.chdir("blocks")
@@ -220,6 +231,8 @@ class MainWindow(QMainWindow):
     def loadFile(self,file):
         try:
             project = IProject.load(file)
+            # TODO: ES AQUI
+            project.scene.mousePressEvent = self.viewPressEvent
             if project.name in self.projects:
                 print("YA EXISTE")
             else:
@@ -279,6 +292,7 @@ class MainWindow(QMainWindow):
         directory = self.defaultDirectory + "\\" + name + ".vcgp"
         project = IProject(directory,input_info,output_info)
         project.save()
+        project.scene.mousePressEvent = self.viewPressEvent
 
         self.dynamicProjectTable.append(project)
         self.projects[name] = project
@@ -292,7 +306,18 @@ class MainWindow(QMainWindow):
         item.setText(0,name)
         item.setIcon(0,self.projectIco)
         self.ui.explorerTree.addTopLevelItem(item)
-
-
         # # Drawing project
         # self.drawProject(project)
+
+    def viewPressEvent(self,event):
+        super(QGraphicsScene,self.currentProject.scene).mousePressEvent(event)
+        # TODO: Check everything is ok without mousePressEvent
+        super().mousePressEvent(event)
+        pos = event.scenePos()
+        x = int(pos.x())
+        y = int(pos.y())
+        if self.state == BLOCK_INSERTION:
+            block = self.dynamicBlock(self.currentProject.system,*self.parameters)
+            block.screenPos = x,y
+            visualBlock = QBlock(block)
+            self.currentProject.scene.addItem(visualBlock)
