@@ -34,6 +34,9 @@ class MainWindow(QMainWindow):
 
         self.blocks = []    # Reference to the blocks to be loaded. <QItem:Path,Type>
 
+        self.dynamicBlock = None    # Current loaded dynamic block
+        self.parameters = None      # Parameters that receive the current loaded dynamic block
+
         self.initializeUI()
 
     def initializeUI(self):
@@ -103,13 +106,13 @@ class MainWindow(QMainWindow):
 
     def loadDynamicBlock(self,mod):
         print("Loading Dynamic Block")
-        className = mod.__className__
+        self.dynamicBlock = mod.__getattribute__(mod.__className__)
         win = mod.__getattribute__(mod.__win__)()
         win.show()
+        win.accept.connect(self.loadParameters)
 
-
-        # block = mod.__getattribute__(className)
-        # block.initializer(self)
+    def loadParameters(self,args):
+        self.parameters = args
 
     def loadIcons(self):
         self.standardIco = QIcon("resources\\standard.ico")
