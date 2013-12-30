@@ -38,6 +38,25 @@ class System:
         self.output_info = output_info
         self.input_names = [name for name,size in input_info]
         self.output_names = [name for name,size in output_info]
+        self.includedLibrary = ["IEEE.std_logic_1164.all"]
+
+    def buildVHDLCode(self):
+        """ Building the code that will be generated.
+        """
+        fileText = """
+        library IEEE;
+        """
+        # Including libraries
+        fileText += "-- Including libraries"
+        for i in self.includedLibrary:
+            fileText += "use %s;\n"%i
+
+        fileText += "\n"
+        fileText += "entity %s is\n"%self.name
+
+
+
+
 
     def __getitem__(self, name):
         """ Find a port for his name.

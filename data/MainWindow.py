@@ -310,9 +310,9 @@ class MainWindow(QMainWindow):
         # self.drawProject(project)
 
     def viewPressEvent(self,event):
-        super(QGraphicsScene,self.currentProject.scene).mousePressEvent(event)
+        super(GraphicsScene,self.currentProject.scene).mousePressEvent(event)
         # TODO: Check everything is ok without mousePressEvent
-        super().mousePressEvent(event)
+        # super().mousePressEvent(event)
         pos = event.scenePos()
         x = int(pos.x())
         y = int(pos.y())

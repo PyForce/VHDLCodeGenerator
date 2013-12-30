@@ -7,6 +7,8 @@
 
 __author__ = "BlakeTeam"
 
+from visual.BlockVisual import *
+
 IN = 1
 OUT = 0
 TEMP = 2
@@ -39,6 +41,12 @@ class Block:
         # Position on the screen to visualize the block
         self.screenPos = (0,0)
 
+    def getCoords(self,mode,index):
+        if mode == IN:
+            return self.screenPos[0] - QBlock.PORT_SIZE,self.screenPos[1] + (index + 1)*(QBlock.DX*(max(len(self.block.input_ports), len(self.block.output_ports))+1)/len(self.input_ports))
+        else:
+            return self.screenPos[0] + QBlock.PORT_SIZE + QBlock.WIDTH, self.screenPos[1] + (index + 1)*(QBlock.DX*(max(len(self.block.input_ports), len(self.block.output_ports))+1)/len(self.output_ports))
+
     def get_name(self):
         """ Return a valid name for the block.
             A name that is not in the list of names in the current system.
@@ -51,6 +59,10 @@ class Block:
                 return name
             else:
                 ind += 1
+
+    def getConnection(self):
+        """ Return a
+        """
 
     def generate(self):
         """ Method to be overridden. It generates the VHDL code.

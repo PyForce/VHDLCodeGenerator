@@ -159,6 +159,9 @@
    <property name="text">
     <string>&amp;Close</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
   </action>
   <action name="action_New_System">
    <property name="text">
@@ -255,7 +258,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>136</x>
-     <y>255</y>
+     <y>253</y>
     </hint>
    </hints>
   </connection>
@@ -272,6 +275,22 @@
     <hint type="destinationlabel">
      <x>136</x>
      <y>374</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Close</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>309</x>
+     <y>255</y>
     </hint>
    </hints>
   </connection>

@@ -17,6 +17,7 @@ class QBlock(QGraphicsItem):
     DX = 10 # Distance between ports
     PORT_SIZE = DX/2
     COLOR = 0,100,0,100 # Red, Green, Blue, Alpha
+    WIDTH = 40
 
     def __init__(self, block, parent = None):
         """ QGraphicsItem that represent the Blocks of VHDL Code.
@@ -26,7 +27,7 @@ class QBlock(QGraphicsItem):
         self.setPos(*block.screenPos)
         self.height = QBlock.DX*(max(len(self.block.input_ports), len(self.block.output_ports))+1)
         # self.width = self.height/
-        self.width = 40
+        self.width = WIDTH
 
         self.rect = QRectF(-QBlock.PORT_SIZE,0,2*QBlock.PORT_SIZE + self.width,self.height).adjusted(0.5,0.5,0.5,0.5)
         # self.rectf = QRectF(-QBlock.PORT_SIZE,0,QBlock.PORT_SIZE+self.width,self.height).adjusted(0.1,0.1,0.1,0.1)

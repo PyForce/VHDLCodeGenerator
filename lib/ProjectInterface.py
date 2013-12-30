@@ -17,6 +17,9 @@ from visual import *
 from .System import System as _System
 from visual.SystemVisual import QSystem
 
+class GraphicsScene(QGraphicsScene):
+    def __init__(self):
+        super().__init__()
 
 class IProject:
     def __init__(self,path,input_vector,output_vector):
@@ -29,7 +32,7 @@ class IProject:
         self.dir, self.name = os.path.split(path)
         realName = self.name.split('.')[0]  # The name of the project without the extension
         self.system = _System(realName,input_vector,output_vector)
-        self.scene = QGraphicsScene()
+        self.scene = GraphicsScene()
         self.view = QGraphicsView()
         self.view.setDragMode(QGraphicsView.ScrollHandDrag)
         self.view.setScene(self.scene)
