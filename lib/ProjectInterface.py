@@ -11,7 +11,7 @@ import os.path
 import pickle
 
 from data import *
-from visual import *
+from visual.ViewVisual import *
 
 
 from .System import System as _System
@@ -33,8 +33,7 @@ class IProject:
         realName = self.name.split('.')[0]  # The name of the project without the extension
         self.system = _System(realName,input_vector,output_vector)
         self.scene = GraphicsScene()
-        self.view = QGraphicsView()
-        self.view.setDragMode(QGraphicsView.ScrollHandDrag)
+        self.view = QView()
         self.view.setScene(self.scene)
         self.initializeView(self.view)
 
@@ -65,14 +64,4 @@ class IProject:
         self.scene.addItem(self.visualSystem)
 
         for b in self.system.block:
-            self.scene.addItem(QBlock(b))
-
-        def view_wheelEvent(event):
-            if event.delta() > 0:
-                view.scale(1.25,1.25)
-            else:
-                view.scale(0.8,0.8)
-
-        ADJUST = 50
-        # view.setSceneRect(-WIDTH/2-ADJUST,-HEIGHT/2-ADJUST,WIDTH+2*ADJUST,HEIGHT+2*ADJUST)
-        view.wheelEvent = view_wheelEvent
+            self.scene.addItem(QBlock(b, view))

@@ -319,5 +319,5 @@ class MainWindow(QMainWindow):
         if self.state == BLOCK_INSERTION:
             block = self.dynamicBlock(self.currentProject.system,*self.parameters)
             block.screenPos = x,y
-            visualBlock = QBlock(block)
+            visualBlock = QBlock(block, self.currentProject.view)
             self.currentProject.scene.addItem(visualBlock)

@@ -55,9 +55,6 @@ class System:
         fileText += "entity %s is\n"%self.name
 
 
-
-
-
     def __getitem__(self, name):
         """ Find a port for his name.
             This function starts for input ports.

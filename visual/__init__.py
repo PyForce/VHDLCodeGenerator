@@ -6,3 +6,4 @@
 from .BlockVisual import *
 from .PortConfiguration import *
 from .SystemVisual import *
+from .ViewVisual import *
