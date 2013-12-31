@@ -3,24 +3,26 @@ __author__ = 'GVF'
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+import visual.BlockVisual
+
 class QView(QGraphicsView):
-    def __init__(self, parent=None):
+    def __init__(self, parent = None):
         super().__init__(parent)
         self.setDragMode(QGraphicsView.ScrollHandDrag)
-        self.drawConn = False
-        self.line = None
-        self.lineSource = ()
+        self.drawConn = False       # True if connection is drawing
+        self.currentLine = None     # Active line
+        self.lineSource = ()        # Source coordinates
 
     def beginLine(self, x, y):
         self.drawConn = True
         self.lineSource = (x, y)
-        self.line = QGraphicsLineItem(x, y, x+1, y+1)
-        self.scene().addItem(self.line)
+        self.currentLine = QGraphicsLineItem(x, y, x+1, y+1)
+        self.scene().addItem(self.currentLine)
 
     def endLine(self):
         self.drawConn = False
-        self.line = None
-        self.scene().removeItem(self.line)
+        self.currentLine = None
+        self.scene().removeItem(self.currentLine)
         self.lineSource = ()
 
     def mouseMoveEvent(self, event):
@@ -28,17 +30,16 @@ class QView(QGraphicsView):
         if self.drawConn:
             x,y = self.lineSource
             coord = self.mapToScene(event.pos().x(), event.pos().y())
-            self.line.setLine(x, y, coord.x(), coord.y())
+            self.currentLine.setLine(x, y, coord.x(), coord.y())
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
-        print("click")
-        if event.button() == Qt.RightButton:
-            item = self.itemAt(event.pos())
-            print(item)
-            print("right")
-            coord = self.mapToScene(event.pos().x(), event.pos().y())
-            self.beginLine(coord.x(), coord.y())
+        # print("press")
+        # item = self.itemAt(event.pos())
+        # if isinstance(item,visual.BlockVisual.QPin):
+        #     print("Im a QPin")
+        # coord = self.mapToScene(event.pos().x(), event.pos().y())
+        # self.beginLine(coord.x(), coord.y())
 
     def mouseReleaseEvent(self, event):
         super().mouseReleaseEvent(event)

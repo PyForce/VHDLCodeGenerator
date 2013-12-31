@@ -43,16 +43,95 @@ class System:
     def buildVHDLCode(self):
         """ Building the code that will be generated.
         """
-        fileText = """
-        library IEEE;
-        """
         # Including libraries
-        fileText += "-- Including libraries"
+        fileText = "-- Including libraries\nlibrary IEEE;\n"
+
         for i in self.includedLibrary:
             fileText += "use %s;\n"%i
 
         fileText += "\n"
         fileText += "entity %s is\n"%self.name
+
+        fileText += "-- Generating ports\n"
+        fileText += "port (\n"
+
+        # Generating input ports
+        for i in self.system_input.output_ports:
+            fileText += "%s : in std_logic%s;\n"%(i.name,"" if i.size == 1 else "_vector(%d downto 0)"%(i.size - 1))
+
+        # Generating output ports
+        for i in self.system_output.input_ports:
+            fileText += "%s : out std_logic%s;\n"%(i.name,"" if i.size == 1 else "_vector(%d downto 0)"%(i.size - 1))
+
+        fileText = fileText[:-2]
+        fileText += ");\n"
+        fileText += "end %s;\n"%self.name
+
+        # Architecture Implementation
+        fileText += "\n-- Architecture Implementation\n"
+        fileText += "architecture Arq_%s of %s is\n"%(self.name,self.name)
+        fileText += "begin\n"
+
+        # Port declaration
+        fileText += "-- Port declaration\n"
+
+        # TODO: Overrated RAM
+        for i in self.block:
+            fileText += "-- Declaring %s ports & temporary signals\n"%(i.name)
+            signals = i.getSignal()
+            inputSig = []
+            outputSig = []
+            tempSig = []
+            for name,size,mode in signals:
+                if mode == IN:
+                    inputSig.append((name,size))
+                elif mode == OUT:
+                    outputSig.append((name,size))
+                else:
+                    tempSig.append((name,size))
+
+            fileText += "\n-- Input ports\n"
+            for name,size in inputSig:
+                fileText += "signal %s__%s : std_logic%s;\n"%(i.name, name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1))
+
+            fileText += "\n-- Output ports\n"
+            for name,size in outputSig:
+                fileText += "signal %s__%s : std_logic%s;\n"%(i.name, name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1))
+
+            fileText += "\n-- Temporary signals\n"
+            for name,size in outputSig:
+                fileText += "signal %s__%s : std_logic%s;\n"%(i.name, name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1))
+
+        # Defining connections
+        fileText += "\n-- Defining connections\n"
+
+        for i in self.block:
+            for port_inp in i.input_ports:
+                receiver = i.name + "__" + port_inp.name
+                if self.system_input == port_inp.connection.out_block:
+                    sender = port_inp.connection.out_block[port_inp.connection.ind_output].name
+                else:
+                    sender = port_inp.connection.out_block.name + "__" + port_inp.connection.out_block[port_inp.connection.ind_output].name
+                fileText += "%s <= %s;\n"%(receiver, sender)
+            fileText += "\n"
+
+        # Block implementations
+        fileText += "\n-- Blocks implementation\n"
+
+        for i in self.block:
+            fileText += "-- Implementation of %s block\n"%self.name
+            fileText += i.generate()
+            fileText += "\n"
+
+        # Connecting outputs
+        fileText += "-- Connecting outputs"
+        for i in self.system_output.input_ports:
+            fileText += "%s <= %s;\n"%(i.name,i.connection.out_block[i.connection.ind_output].name)
+
+        fileText += "end Arq_%s;\n"%self.name
+
+        print("\nGENERATED CODE\n")
+        print(fileText)
 
 
     def __getitem__(self, name):

@@ -231,8 +231,9 @@ class MainWindow(QMainWindow):
     def loadFile(self,file):
         try:
             project = IProject.load(file)
+            project.mainWindow = self
             # TODO: ES AQUI
-            project.scene.mousePressEvent = self.viewPressEvent
+            project.scene.mousePressEvent = self.scenePressEvent
             if project.name in self.projects:
                 print("YA EXISTE")
             else:
@@ -290,9 +291,9 @@ class MainWindow(QMainWindow):
 
     def createProject(self,name,input_info,output_info):
         directory = self.defaultDirectory + "\\" + name + ".vcgp"
-        project = IProject(directory,input_info,output_info)
+        project = IProject(directory,input_info,output_info,self)
         project.save()
-        project.scene.mousePressEvent = self.viewPressEvent
+        project.scene.mousePressEvent = self.scenePressEvent
 
         self.dynamicProjectTable.append(project)
         self.projects[name] = project
@@ -309,15 +310,23 @@ class MainWindow(QMainWindow):
         # # Drawing project
         # self.drawProject(project)
 
-    def viewPressEvent(self,event):
-        super(GraphicsScene,self.currentProject.scene).mousePressEvent(event)
-        # TODO: Check everything is ok without mousePressEvent
-        # super().mousePressEvent(event)
+    def scenePressEvent(self,event):
+        curScene = self.currentProject.scene
+        super(GraphicsScene,curScene).mousePressEvent(event)
+
         pos = event.scenePos()
         x = int(pos.x())
         y = int(pos.y())
+        print(x,y)
+        elements = curScene.itemAt(x,y)
+        print(elements)
+
         if self.state == BLOCK_INSERTION:
             block = self.dynamicBlock(self.currentProject.system,*self.parameters)
             block.screenPos = x,y
             visualBlock = QBlock(block, self.currentProject.view)
             self.currentProject.scene.addItem(visualBlock)
+            visualBlock.setPos(x,y)
+
+        elif self.state == DEFAULT_MODE:
+            pass

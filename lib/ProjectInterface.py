@@ -22,7 +22,7 @@ class GraphicsScene(QGraphicsScene):
         super().__init__()
 
 class IProject:
-    def __init__(self,path,input_vector,output_vector):
+    def __init__(self,path,input_vector,output_vector,mainWindow = None):
         """ Interface to handle each project.
 
         :string path:           Directory (name included of the current project)
@@ -37,12 +37,14 @@ class IProject:
         self.view.setScene(self.scene)
         self.initializeView(self.view)
 
+        self.mainWindow = mainWindow
+
     @classmethod
     def load(cls,path):
-        dir, name = os.path.split(path)###########################
-        file = open(dir + "\\" + name,"rb")#######################
-        system = pickle.load(file)################################
-        file.close()##############################################
+        dir, name = os.path.split(path)
+        file = open(dir + "\\" + name,"rb")
+        system = pickle.load(file)
+        file.close()
         return IProject(path,system.input_info,system.output_info)
 
     def save(self):

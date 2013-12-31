@@ -19,7 +19,7 @@ class QBlock(QGraphicsItem):
     COLOR = 0,100,0,100 # Red, Green, Blue, Alpha
     WIDTH = 40
 
-    def __init__(self, block, parent = None):
+    def __init__(self, block, view = None):
         """ QGraphicsItem that represent the Blocks of VHDL Code.
         """
         super().__init__()
@@ -27,40 +27,53 @@ class QBlock(QGraphicsItem):
         self.setPos(*block.screenPos)
         self.height = QBlock.DX*(max(len(self.block.input_ports), len(self.block.output_ports))+1)
         # self.width = self.height/
-        self.width = WIDTH
+        self.width = QBlock.WIDTH
 
-        self.inputPort = QPort(parent, self)
-        self.inputPort.setPos(*block.screenPos)
+        x0,y0 = block.screenPos
+        print(x0,y0)
+        self.inputPort = []
+        self.outputPort = []
+        # self.inputPort = QPort()
+        # self.inputPort.setPos(*block.screenPos)
+        #
+        # self.outputPort = QPort()
+        # self.outputPort.setPos(*block.screenPos)
 
-        self.outputPort = QPort(parent, self)
-        self.outputPort.setPos(*block.screenPos)
-
-        self.rect = QRectF(-QBlock.PORT_SIZE,0,2*QBlock.PORT_SIZE + self.width,self.height).adjusted(0.5,0.5,0.5,0.5)
+        # self.rect = QRectF(-QBlock.PORT_SIZE,0,2*QBlock.PORT_SIZE + self.width,self.height).adjusted(0.5,0.5,0.5,0.5)
+        self.rect = QRectF(0,0,self.width,self.height)
         # self.rectf = QRectF(-QBlock.PORT_SIZE,0,QBlock.PORT_SIZE+self.width,self.height).adjusted(0.1,0.1,0.1,0.1)
 
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setCursor(Qt.OpenHandCursor)
 
-        x0,y0 = block.screenPos
-
         di = self.height/(len(self.block.input_ports) + 1)
         do = self.height/(len(self.block.output_ports) + 1)
 
+        scene = view.scene()
+
         # Drawing input ports
         for i in range(len(self.block.input_ports)):
-            self.inputPort.addPin(QPin(-QBlock.PORT_SIZE +x0,di*(i + 1) +y0,0 +x0,di*(i + 1) +y0, self.inputPort))
+            pin = QPin(x0,y0,i,IN,di,self)
+            # self.inputPort.addPin(pin)
+            self.inputPort.append(pin)
+            scene.addItem(pin)
 
         # Drawing output ports
         for i in range(len(self.block.output_ports)):
-            self.outputPort.addPin(QPin(self.width  +x0,do*(i + 1) +y0,self.width+ QBlock.PORT_SIZE +x0,do*(i + 1) +y0, self.outputPort))
+            pin = QPin(x0,y0,i,OUT,do,self)
+            # self.outputPort.addPin(pin)
+            self.outputPort.append(pin)
+            scene.addItem(pin)
 
-    def boundingRect(self):
-        return self.rect
+    def updatePorts(self):
+        for i in self.inputPort:
+            i.myUpdate()
+        for i in self.outputPort:
+            i.myUpdate()
 
-    def shape(self):
-        path = QPainterPath()
-        path.addRect(self.rect)
-        return path
+    def mouseMoveEvent(self,event):
+        super().mouseMoveEvent(event)
+        self.updatePorts()
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
@@ -70,35 +83,68 @@ class QBlock(QGraphicsItem):
         super().mouseReleaseEvent(event)
         self.setCursor(Qt.OpenHandCursor)
         self.block.screenPos = (self.pos().x(), self.pos().y())
+        self.updatePorts()
+
+    def boundingRect(self):
+        return self.rect
+
+    def shape(self):
+        path = QPainterPath()
+        path.addRect(self.rect)
+        return path
 
     def paint(self,painter,styleOptionGraphicsItem,widget):
         painter.fillRect(0,0,self.width,self.height,QColor(*QBlock.COLOR))
         painter.drawRect(0,0,self.width,self.height)
-
-        di = self.height/(len(self.block.input_ports) + 1)
-        do = self.height/(len(self.block.output_ports) + 1)
-
-class QPort(QGraphicsItemGroup):
-    def __init__(self, view, parent=None):
-        super().__init__(parent)
-        self._parent = parent
-        self.view = view
-        self.pins = []
-
-    def addPin(self, pin):
-        self.addToGroup(pin)
-        self.pins.append(pin)
-
+        # di = self.height/(len(self.block.input_ports) + 1)
+        # do = self.height/(len(self.block.output_ports) + 1)
 
 class QPin(QGraphicsLineItem):
-    def __init__(self,x0, y0, x1, y1, parent=None):
-        super().__init__(x0, y0, x1, y1)
-        self._parent = parent
+    selected = pyqtSignal(QPin)
+
+    def __init__(self, x, y, index, mode, dy, parent):
+        """
+
+        :int x:         x coordinate of the block that inherit
+        :int y:         y coordinate of the block that inherit
+        :int index:     position of the pin in the block
+        :1/0 mode:      IN/OUT
+        :float dy:      distance between two pins
+        :param parent:  Block of the pin
+        """
+        super().__init__()
+        self.dy = dy
+        self.index = index
+        self.mode = mode
+        self.block = parent
+
         self.setCursor(Qt.CrossCursor)
-    #     self.rect = super().boundingRect().adjusted(.1, 1, .1, 1)
-    #
-    # def boundingRect(self):
-    #     return self.rect
+        self.myUpdate()
 
+    def myUpdate(self):
+        point = self.block.scenePos()
+        # print(point)
+        self.x = point.x()
+        self.y = point.y()
+        # print(self.x,self.y)
 
+        # Calculating coordinates of the pin
+        # x1,y1 is the out node in both cases.
+        if self.mode == IN:
+            self.x1 = -QBlock.PORT_SIZE + self.x
+            self.y1 = self.dy * (self.index + 1) + self.y
+            self.x2 = self.x
+            self.y2 = self.y1
+        else:
+            self.x1 = QBlock.WIDTH + QBlock.PORT_SIZE + self.x
+            self.y1 = self.dy*(self.index + 1) + self.y
+            self.x2 = QBlock.WIDTH + self.x
+            self.y2 = self.y1
 
+        self.setLine(self.x1,self.y1,self.x2,self.y2)
+
+    def mousePressEvent(self,event):
+        super().mousePressEvent(event)
+        print("I was selected")
+        print(self.x1,self.y1)
+        self.selected.emit(self)
