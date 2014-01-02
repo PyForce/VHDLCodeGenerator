@@ -36,15 +36,37 @@ class Multiplexer(Block):
         self.defaultOutput = self.defaultOutput.upper()
         self.enablerActiveSymbol = enablerActiveSymbol
         self.enabler = enabler
+        self.numMuxIn = numInput
         self.selBits = len(bin(numInput)) - 2    # Binary Input Selector
         self.name = "Multiplexer"
+        self.HiZ = "Z"*sizeInput
 
-        input_vector = [sizeInput]*numInput + [self.selBits] + ([1] if enabler else [])
+
+        input_vector = [sizeInput]*self.numMuxIn + [self.selBits] + ([1] if enabler else [])
         super().__init__(input_vector,[sizeInput],system,self.name)
+        self.input_ports[self.numMuxIn].name = "SELECT"
+        if self.enabler == True:
+            self.input_ports[self.numMuxIn + 1].name = "EN"
         self.variables = [("CHOSEN",sizeInput)]
 
     def generate(self):
-        pass
+        filetext = ""
+        if self.enabler == False:
+            filetext += "%s <= "%(self.name + "__" + self.output_ports[0].name)
+            for i in self.numMuxIn:
+                selbinary = bin(i)[2:]
+                filetext += "%s when (%s = %s) else\n"%((self.name + "__" + self.input_ports[i].name),(self.name+ "__" + self.input_ports[self.numMuxIn].name),"'"+selbinary+"'" if self.input_ports[self.numMuxIn].size == 1 else '"'+selbinary+'"')
+            filetext += "&s when others;\n"%(("'"+self.defaultOutput+"'") if (len(self.defaultOutput) == 1) else ('"'+self.defaultOutput+'"'))
+        else:
+            filetext += "%s <= "%(self.name + "__" + self.variables[0].name)
+            for i in self.numMuxIn:
+                selbinary = bin(i)[2:]
+                filetext += "%s when (%s = %s) else\n"%((self.name + "__" + self.input_ports[i].name),(self.name+ "__" + self.input_ports[self.numMuxIn].name),"'"+selbinary+"'" if self.input_ports[self.numMuxIn].size == 1 else '"'+selbinary+'"')
+            filetext += "%s when others\n"%("'"+self.defaultOutput+"'" if len(self.defaultOutput) == 1 else '"'+self.defaultOutput+'"')
+            filetext += "%s <= %s when %s = %s else\n"%((self.name + "__" +self.output_ports[0].name),(self.name + "__" + self.variables[0].name),(self.name + "__" + self.input_ports[self.numMuxIn + 1].name),("'"+self.enablerActiveSymbol+"'"))
+            filetext += "%s when others;\n"%(("'"+self.HiZ+"'") if (len(self.HiZ) == 1) else ('"'+self.HiZ+'"'))
+        return filetext
+
 
     @staticmethod
     def initializer(main):
@@ -73,5 +95,3 @@ class MuxWindow(QWidget):
         self.close()
 
 
-if __name__ == "__main__":
-    a = Multiplexer(5,8,False,None)

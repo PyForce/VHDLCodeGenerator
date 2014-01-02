@@ -232,7 +232,6 @@ class MainWindow(QMainWindow):
         try:
             project = IProject.load(file)
             project.mainWindow = self
-            # TODO: ES AQUI
             project.scene.mousePressEvent = self.scenePressEvent
             if project.name in self.projects:
                 print("YA EXISTE")

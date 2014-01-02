@@ -50,6 +50,7 @@ class QBlock(QGraphicsItem):
         do = self.height/(len(self.block.output_ports) + 1)
 
         scene = view.scene()
+        self.scene = scene
 
         # Drawing input ports
         for i in range(len(self.block.input_ports)):
@@ -100,7 +101,7 @@ class QBlock(QGraphicsItem):
         # do = self.height/(len(self.block.output_ports) + 1)
 
 class QPin(QGraphicsLineItem):
-    selected = pyqtSignal(QPin)
+    # selected = pyqtSignal(QPin)
 
     def __init__(self, x, y, index, mode, dy, parent):
         """
@@ -117,9 +118,22 @@ class QPin(QGraphicsLineItem):
         self.index = index
         self.mode = mode
         self.block = parent
-
         self.setCursor(Qt.CrossCursor)
         self.myUpdate()
+
+        self.rect = QRectF(min(self.x1, self.x2), min(self.y1, self.y2)-2, abs(self.x1 - self.x2), 4)
+        self._shape = QPainterPath()
+        self._shape.addRect(self.rect)
+        parent.scene.addItem(QGraphicsRectItem(self.rect))
+
+    def boundingRect(self):
+        return self.rect
+
+    def shape(self):
+        return self._shape
+
+    def getAbstractBlock(self):
+        return self.block.block
 
     def myUpdate(self):
         point = self.block.scenePos()
@@ -143,8 +157,14 @@ class QPin(QGraphicsLineItem):
 
         self.setLine(self.x1,self.y1,self.x2,self.y2)
 
-    def mousePressEvent(self,event):
-        super().mousePressEvent(event)
-        print("I was selected")
-        print(self.x1,self.y1)
-        self.selected.emit(self)
+
+    def paint(self,painter,styleOptionGraphicsItem,widget):
+        # print(self.rect, self.rect.width(), self.rect.height())
+        super().paint(painter,styleOptionGraphicsItem,widget)
+
+        #painter.drawRect(self.rect)
+    # def mousePressEvent(self,event):
+    #     super().mousePressEvent(event)
+    #     print("I was selected")
+    #     print(self.x1,self.y1)
+    #     self.selected.emit(self)
