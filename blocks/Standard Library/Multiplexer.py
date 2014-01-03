@@ -20,7 +20,7 @@ class Multiplexer(Block):
 
         PORTS SPECIFICATIONS
     """
-    # TODO: Specifications of multiplexer
+    # TODO: Specifications of multiplexer (Documentation)
     def __init__(self,system,numInput,sizeInput,defaultOutput='Z',enabler=True,enablerActiveSymbol = '0'):
         """
 

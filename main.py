@@ -32,3 +32,8 @@ if __name__ == '__main__':
 
     window.showMaximized()
     sys.exit(app.exec_())
+
+# TODO: ->	Guardar y cargar proyectos
+# TODO: ->	Incluir los labels necesarios a los bloques para mostrar su información
+# TODO: ->	Hacer el parametrizador y habilitar los bloques paramétricos
+# TODO: ->	Hacer el guardador de bloques estáticos (exportar)

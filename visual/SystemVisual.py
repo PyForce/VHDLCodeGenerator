@@ -13,7 +13,6 @@ from PyQt4.QtGui import *
 from data import *
 from data.MainWindow import *
 
-# Todo: Change system form(paint)
 WIDTH = 100
 HEIGHT = 50
 
