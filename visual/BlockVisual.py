@@ -131,13 +131,9 @@ class QPin(QGraphicsLineItem):
         return self._shape
 
     def getPort(self):
-        print("....................")
-        print(self.mode)
         if self.mode == IN:
-            print(self.getAbstractBlock().input_ports)
             return self.getAbstractBlock().input_ports[self.index]
         else:
-            print(self.getAbstractBlock().output_ports)
             return self.getAbstractBlock().output_ports[self.index]
 
     def getSize(self):
@@ -148,10 +144,8 @@ class QPin(QGraphicsLineItem):
 
     def myUpdate(self):
         point = self.block.scenePos()
-        # print(point)
         self.x = point.x()
         self.y = point.y()
-        # print(self.x,self.y)
 
         # Calculating coordinates of the pin
         # x1,y1 is the out node in both cases.
@@ -174,29 +168,18 @@ class QPin(QGraphicsLineItem):
 
         # Update Connection
         port = self.getPort()
-        if not isinstance(port,Port):
-            print(port)
-            print(type(port))
-            print("ERRROOOOOOOORRRRRR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         if port.mode == data.constants.IN:
             if port.connection != None:
                 connLine = self.getAbstractBlock().system.connections[port.connection]
-                otherPin = port.connection.out_block[port.connection.ind_output].pin
+                otherPin = port.connection.out_block.output_ports[port.connection.ind_output].pin
                 QView.paintConnection(self,otherPin,connLine)
+                connLine.update()
         else:
             for i in port.connection:
                 connLine = self.getAbstractBlock().system.connections[i]
-                otherPin = i.out_block[i.ind_output].pin
-                QView.paintConnection(self,otherPin,connLine)
+                otherPin = i.in_block.input_ports[i.ind_input].pin
+                QView.paintConnection(otherPin,self,connLine)
+                connLine.update()
 
     def paint(self,painter,styleOptionGraphicsItem,widget):
-        # print(self.rect, self.rect.width(), self.rect.height())
         super().paint(painter,styleOptionGraphicsItem,widget)
-
-        #painter.drawRect(self.rect)
-
-    # def mousePressEvent(self,event):
-    #     super().mousePressEvent(event)
-    #     print("I was selected")
-    #     print(self.x1,self.y1)
-    #     self.selected.emit(self)

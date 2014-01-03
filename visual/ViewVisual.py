@@ -66,7 +66,7 @@ class QView(QGraphicsView):
             coord = self.mapToScene(event.pos().x(), event.pos().y())
 
             self.endLine(self.itemAt(coord.toPoint()))
-            self.setDragMode(self.ScrollHandDrag)
+            # self.setDragMode(self.ScrollHandDrag)
 
             item = self.itemAt(event.pos())
             # print("Item size:%d\nItem2 Size:%d"%(item.getSize(),self.currentItem.getSize()))
@@ -92,7 +92,7 @@ class QView(QGraphicsView):
 
                     # VISUAL CONNECTION
                     visualConnection = QGraphicsLineItem()
-                    QView.paintConnection(inputItem,outputItem,visualConnection)
+                    visualConnection = QView.paintConnection(inputItem,outputItem,visualConnection)
                     self.scene().addItem(visualConnection)
 
                     # ABSTRACT CONNECTION
@@ -106,6 +106,7 @@ class QView(QGraphicsView):
         x1,y1 = item1.x1,item1.y1
         x2,y2 = item2.x1, item2.y1
         line.setLine(x1,y1,x2,y2)
+        return line
 
 
     def wheelEvent(self, event):

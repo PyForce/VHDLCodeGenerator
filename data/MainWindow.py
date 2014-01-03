@@ -234,7 +234,7 @@ class MainWindow(QMainWindow):
             project.mainWindow = self
             project.scene.mousePressEvent = self.scenePressEvent
             if project.name in self.projects:
-                print("YA EXISTE")
+                print("Already exists")
             else:
                 name = project.name.split('.')[0]
                 self.dynamicProjectTable.append(project)

@@ -20,7 +20,7 @@ class Connection:
         :Int ind_input:     Port index in the input block
         :System system:     Global system where the connection was created
         """
-        if  out_block.output_ports[ind_output].size != in_block.input_ports[ind_input].size:
+        if out_block.output_ports[ind_output].size != in_block.input_ports[ind_input].size:
             # The size of both ports must be equal.
             raise InvalidConnection("Size of ports doesn't match")
 
