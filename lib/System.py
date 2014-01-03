@@ -7,28 +7,13 @@
 
 __author__ = "BlakeTeam"
 
-def signature():
-    import random
-    authors = "Gustavo Viera López,Danilo Gómez Gómez,Marcelo Fornet Fornés".split(',')
-    sign =  "-- This code was automatically generated using VHDL Code Generator.\n"
-    sign += "-- Courtesy of BlakeTeam:\n"
-    for i in random.sample(range(3),3):
-        sign += "--\t%s\n"%authors[i]
-    sign += "--\tManuel Madrigal Casals\n"
-    sign += "--\tCesar Hernández Hernández\n"
-    sign += "---------------------------------:)\n\n"
-    return sign
-
-print(signature())
-
-# from lib import *
+import lib.signature
+from lib import *
 from .Block import Block as _Block
 from lib.Connection import Connection as _Connection
 
 IN = 1
 OUT = 0
-
-
 
 class System:
     def __init__(self,name,input_info,output_info):
@@ -70,7 +55,7 @@ class System:
     def buildVHDLCode(self):
         """ Building the code that will be generated.
         """
-        fileText = signature()
+        fileText = lib.signature.signature()
 
         # Including libraries
         fileText += "-- Including libraries\nlibrary IEEE;\n"

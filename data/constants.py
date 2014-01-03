@@ -7,3 +7,5 @@ BLOCK_INSERTION = 1
 
 IN = 1
 OUT = 0
+
+VERSION = "0.7Beta"
