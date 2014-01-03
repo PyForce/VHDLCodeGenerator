@@ -11,7 +11,11 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from data import *
-# from data.MainWindow import *
+from data.MainWindow import *
+
+# Todo: Change system form(paint)
+WIDTH = 100
+HEIGHT = 50
 
 class QSystem(QGraphicsItem):
     COLOR = 0,200,30,20 # Red, Green, Blue, Alpha

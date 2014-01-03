@@ -120,17 +120,29 @@ class QPin(QGraphicsLineItem):
         self.block = parent
         self.setCursor(Qt.CrossCursor)
         self.myUpdate()
-
+        print("AQUI ESTA SELF.X1")
+        print(self.x1)
         self.rect = QRectF(min(self.x1, self.x2), min(self.y1, self.y2)-2, abs(self.x1 - self.x2), 4)
         self._shape = QPainterPath()
         self._shape.addRect(self.rect)
-        parent.scene.addItem(QGraphicsRectItem(self.rect))
+        # parent.scene.addItem(QGraphicsRectItem(self.rect))
 
     def boundingRect(self):
+        self.myUpdate()
         return self.rect
 
     def shape(self):
+        self.myUpdate()
         return self._shape
+
+    def getPort(self):
+        if self.mode == IN:
+            return self.getAbstractBlock().input_ports[self.index]
+        else:
+            return self.getAbstractBlock().output_ports[self.index]
+
+    def getSize(self):
+        return self.getPort().size
 
     def getAbstractBlock(self):
         return self.block.block
@@ -155,6 +167,10 @@ class QPin(QGraphicsLineItem):
             self.x2 = QBlock.WIDTH + self.x
             self.y2 = self.y1
 
+        self.rect = QRectF(min(self.x1, self.x2), min(self.y1, self.y2)-2, abs(self.x1 - self.x2), 4)
+        self._shape = QPainterPath()
+        self._shape.addRect(self.rect)
+
         self.setLine(self.x1,self.y1,self.x2,self.y2)
 
 
@@ -163,6 +179,7 @@ class QPin(QGraphicsLineItem):
         super().paint(painter,styleOptionGraphicsItem,widget)
 
         #painter.drawRect(self.rect)
+
     # def mousePressEvent(self,event):
     #     super().mousePressEvent(event)
     #     print("I was selected")

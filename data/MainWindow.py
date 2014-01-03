@@ -11,6 +11,7 @@ import os
 import importlib
 import pickle
 import _pickle
+import data.constants
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -18,13 +19,6 @@ from PyQt4 import uic
 
 from visual import *
 from lib import *
-
-STATIC_BLOCK = 0
-PARAMETRIC_BLOCK = 1
-DYNAMIC_BLOCK = 2
-
-DEFAULT_MODE = 0    # MOVE & CONNECT MODE
-BLOCK_INSERTION = 1
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -37,7 +31,7 @@ class MainWindow(QMainWindow):
 
         self.blocks = []    # Reference to the blocks to be loaded. <QItem:Path,Type>
 
-        self.state = DEFAULT_MODE
+        self.state = data.constants.DEFAULT_MODE
 
         self.dynamicBlock = None    # Current loaded dynamic block
         self.parameters = None      # Parameters that receive the current loaded dynamic block
@@ -80,8 +74,9 @@ class MainWindow(QMainWindow):
     #     self.layout().addWidget(toolBar)
 
     def setDefaultMode(self):
-        self.state = DEFAULT_MODE
+        self.state = data.constants.DEFAULT_MODE
         self.ui.actionDefault.setChecked(True)
+        self.currentProject.view.mode = self.state
 
     def blockSelected(self,item,column):
         if self.currentProject == None:
@@ -107,12 +102,14 @@ class MainWindow(QMainWindow):
         """
         print(path,type)
 
-        if type == STATIC_BLOCK:
+        if type == data.constants.STATIC_BLOCK:
             pass
-        elif type == PARAMETRIC_BLOCK:
+        elif type == data.constants.PARAMETRIC_BLOCK:
             pass
-        elif type == DYNAMIC_BLOCK:
+        elif type == data.constants.DYNAMIC_BLOCK:
             self.loadDynamicBlock(mod)
+
+        # TODO: Set state to Block insertion if static and parametric mode, the view of the curProject too
 
     def loadDynamicBlock(self,mod):
         print("Loading Dynamic Block")
@@ -123,7 +120,10 @@ class MainWindow(QMainWindow):
 
     def loadParameters(self,args):
         self.parameters = args
-        self.state = BLOCK_INSERTION
+
+        self.state = data.constants.BLOCK_INSERTION
+        self.currentProject.view.mode = self.state
+
         self.ui.actionDefault.setChecked(False)
 
     def loadIcons(self):
@@ -182,19 +182,19 @@ class MainWindow(QMainWindow):
                 #Standard Block
                 if self.isStandardBlock(curPath):
                     fileItems.append((child,self.standardIco))
-                    self.blocks.append((child,curPath,STATIC_BLOCK,None))
+                    self.blocks.append((child,curPath,data.constants.STATIC_BLOCK,None))
                     files = True
                 # Parametric Block
                 elif self.isParameterBlock(curPath):
                     fileItems.append((child,self.parameterIco))
-                    self.blocks.append((child,curPath,PARAMETRIC_BLOCK,None))
+                    self.blocks.append((child,curPath,data.constants.PARAMETRIC_BLOCK,None))
                     files = True
                 else:
                     mod = self.isDynamicBlock(curPath)
                     # Dynamic Block
                     if mod:
                         fileItems.append((child,self.dynamicIco))
-                        self.blocks.append((child,curPath,DYNAMIC_BLOCK,mod))
+                        self.blocks.append((child,curPath,data.constants.DYNAMIC_BLOCK,mod))
                         files = True
         for i in dirItems:
             item.addChild(i)
@@ -276,6 +276,7 @@ class MainWindow(QMainWindow):
         """
         print("CURRENT PROJECT: ",end = "")
         try:
+            self.setDefaultMode()
             self.currentProject = self.dynamicProjectTable[tab]
             print(str(self.currentProject.name))
         except AttributeError:
@@ -320,12 +321,12 @@ class MainWindow(QMainWindow):
         elements = curScene.itemAt(x,y)
         print(elements)
 
-        if self.state == BLOCK_INSERTION:
+        if self.state == data.constants.BLOCK_INSERTION:
             block = self.dynamicBlock(self.currentProject.system,*self.parameters)
             block.screenPos = x,y
             visualBlock = QBlock(block, self.currentProject.view)
             self.currentProject.scene.addItem(visualBlock)
             visualBlock.setPos(x,y)
 
-        elif self.state == DEFAULT_MODE:
+        elif self.state == data.constants.DEFAULT_MODE:
             pass
