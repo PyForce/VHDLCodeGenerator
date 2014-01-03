@@ -13,6 +13,8 @@ IN = 1
 OUT = 0
 TEMP = 2
 
+
+
 class Block:
     """ Description of the block.
 
@@ -78,11 +80,11 @@ class Block:
         signals = []
 
         for i in self.input_ports:
-            signals.append(i.name,i.size,i.mode)
+            signals.append((i.name,i.size,i.mode))
         for i in self.output_ports:
-            signals.append(i.name,i.size,i.mode)
+            signals.append((i.name,i.size,i.mode))
         for i in self.variables:
-            signals.append(i[0],i[1],TEMP)
+            signals.append((i[0],i[1],TEMP))
 
         return signals
 

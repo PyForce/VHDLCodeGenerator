@@ -17,6 +17,8 @@ from visual.ViewVisual import *
 from .System import System as _System
 from visual.SystemVisual import QSystem
 
+import visual.BlockVisual
+
 class GraphicsScene(QGraphicsScene):
     def __init__(self):
         super().__init__()
@@ -62,8 +64,18 @@ class IProject:
     def initializeView(self,view):
         """ Initialize all QGraphicsView components.
         """
-        self.visualSystem = QSystem(self.system)
-        self.scene.addItem(self.visualSystem)
+        inp = visual.BlockVisual.ExternalBlock(self.system.system_input,view)
+        out = visual.BlockVisual.ExternalBlock(self.system.system_output,view)
 
+        self.scene.addItem(inp)
+        self.scene.addItem(out)
+
+        # self.visualSystem = QSystem(self.system)
+        # self.scene.addItem(self.visualSystem)
+
+        # Loading blocks
         for b in self.system.block:
             self.scene.addItem(QBlock(b, view))
+
+        # TODO: Load Connections
+        # Loading Connections

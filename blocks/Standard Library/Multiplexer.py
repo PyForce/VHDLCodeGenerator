@@ -53,17 +53,17 @@ class Multiplexer(Block):
         filetext = ""
         if self.enabler == False:
             filetext += "%s <= "%(self.name + "__" + self.output_ports[0].name)
-            for i in self.numMuxIn:
+            for i in range(self.numMuxIn):
                 selbinary = bin(i)[2:]
                 filetext += "%s when (%s = %s) else\n"%((self.name + "__" + self.input_ports[i].name),(self.name+ "__" + self.input_ports[self.numMuxIn].name),"'"+selbinary+"'" if self.input_ports[self.numMuxIn].size == 1 else '"'+selbinary+'"')
             filetext += "&s when others;\n"%(("'"+self.defaultOutput+"'") if (len(self.defaultOutput) == 1) else ('"'+self.defaultOutput+'"'))
         else:
-            filetext += "%s <= "%(self.name + "__" + self.variables[0].name)
-            for i in self.numMuxIn:
+            filetext += "%s <= "%(self.name + "__" + self.variables[0][0])
+            for i in range(self.numMuxIn):
                 selbinary = bin(i)[2:]
                 filetext += "%s when (%s = %s) else\n"%((self.name + "__" + self.input_ports[i].name),(self.name+ "__" + self.input_ports[self.numMuxIn].name),"'"+selbinary+"'" if self.input_ports[self.numMuxIn].size == 1 else '"'+selbinary+'"')
-            filetext += "%s when others\n"%("'"+self.defaultOutput+"'" if len(self.defaultOutput) == 1 else '"'+self.defaultOutput+'"')
-            filetext += "%s <= %s when %s = %s else\n"%((self.name + "__" +self.output_ports[0].name),(self.name + "__" + self.variables[0].name),(self.name + "__" + self.input_ports[self.numMuxIn + 1].name),("'"+self.enablerActiveSymbol+"'"))
+            filetext += "%s when others;\n"%("'"+self.defaultOutput+"'" if len(self.defaultOutput) == 1 else '"'+self.defaultOutput+'"')
+            filetext += "%s <= %s when %s = %s else\n"%((self.name + "__" +self.output_ports[0].name),(self.name + "__" + self.variables[0][0]),(self.name + "__" + self.input_ports[self.numMuxIn + 1].name),("'"+self.enablerActiveSymbol+"'"))
             filetext += "%s when others;\n"%(("'"+self.HiZ+"'") if (len(self.HiZ) == 1) else ('"'+self.HiZ+'"'))
         return filetext
 

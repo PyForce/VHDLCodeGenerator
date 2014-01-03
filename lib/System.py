@@ -7,12 +7,28 @@
 
 __author__ = "BlakeTeam"
 
+def signature():
+    import random
+    authors = "Gustavo Viera López,Danilo Gómez Gómez,Marcelo Fornet Fornés".split(',')
+    sign =  "-- This code was automatically generated using VHDL Code Generator.\n"
+    sign += "-- Courtesy of BlakeTeam:\n"
+    for i in random.sample(range(3),3):
+        sign += "--\t%s\n"%authors[i]
+    sign += "--\tManuel Madrigal Casals\n"
+    sign += "--\tCesar Hernández Hernández\n"
+    sign += "---------------------------------:)\n\n"
+    return sign
+
+print(signature())
+
 # from lib import *
 from .Block import Block as _Block
 from lib.Connection import Connection as _Connection
 
 IN = 1
 OUT = 0
+
+
 
 class System:
     def __init__(self,name,input_info,output_info):
@@ -29,9 +45,20 @@ class System:
 
         self.block = []         # Block list of the system
         self.connections = {}   # Connection dictionary of the system <Abstract Connection: QGraphicsLineItem>
-        self.system_input = _Block([size for name,size in input_info],(),self)
+        self.system_input = _Block((),[size for name,size in input_info],self)
+        # Setting names to input ports
+        for i in range(len(input_info)):
+            self.system_input.output_ports[i].name = input_info[i][0]
+
+        self.system_input.screenPos = (-50,0)
         self.system_input.setName("SystemInput")
-        self.system_output = _Block((),[size for name,size in output_info],self)
+        self.system_output = _Block([size for name,size in output_info],(),self)
+
+        # Setting names to input ports
+        for i in range(len(output_info)):
+            self.system_output.input_ports[i].name = output_info[i][0]
+
+        self.system_output.screenPos = (50,0)
         self.system_output.setName("SystemOutput")
 
         self.input_info = input_info
@@ -43,8 +70,10 @@ class System:
     def buildVHDLCode(self):
         """ Building the code that will be generated.
         """
+        fileText = signature()
+
         # Including libraries
-        fileText = "-- Including libraries\nlibrary IEEE;\n"
+        fileText += "-- Including libraries\nlibrary IEEE;\n"
 
         for i in self.includedLibrary:
             fileText += "use %s;\n"%i
@@ -77,8 +106,8 @@ class System:
 
         # TODO: Overrated RAM
         for i in self.block:
-            fileText += "-- Declaring %s ports & temporary signals\n"%(i.name)
-            signals = i.getSignal()
+            fileText += "\n-- Declaring %s ports & temporary signals\n"%(i.name)
+            signals = i.getSignals()
             inputSig = []
             outputSig = []
             tempSig = []
@@ -90,7 +119,7 @@ class System:
                 else:
                     tempSig.append((name,size))
 
-            fileText += "\n-- Input ports\n"
+            fileText += "-- Input ports\n"
             for name,size in inputSig:
                 fileText += "signal %s__%s : std_logic%s;\n"%(i.name, name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1))
 
@@ -99,7 +128,7 @@ class System:
                 fileText += "signal %s__%s : std_logic%s;\n"%(i.name, name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1))
 
             fileText += "\n-- Temporary signals\n"
-            for name,size in outputSig:
+            for name,size in tempSig:
                 fileText += "signal %s__%s : std_logic%s;\n"%(i.name, name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1))
 
         # Defining connections
@@ -109,9 +138,9 @@ class System:
             for port_inp in i.input_ports:
                 receiver = i.name + "__" + port_inp.name
                 if self.system_input == port_inp.connection.out_block:
-                    sender = port_inp.connection.out_block[port_inp.connection.ind_output].name
+                    sender = port_inp.connection.out_block.output_ports[port_inp.connection.ind_output].name
                 else:
-                    sender = port_inp.connection.out_block.name + "__" + port_inp.connection.out_block[port_inp.connection.ind_output].name
+                    sender = port_inp.connection.out_block.name + "__" + port_inp.connection.out_block.output_ports[port_inp.connection.ind_output].name
                 fileText += "%s <= %s;\n"%(receiver, sender)
             fileText += "\n"
 
@@ -119,19 +148,20 @@ class System:
         fileText += "\n-- Blocks implementation\n"
 
         for i in self.block:
-            fileText += "-- Implementation of %s block\n"%self.name
+            fileText += "-- Implementation of %s block\n"%i.name
             fileText += i.generate()
             fileText += "\n"
 
         # Connecting outputs
-        fileText += "-- Connecting outputs"
+        fileText += "-- Connecting outputs\n"
         for i in self.system_output.input_ports:
-            fileText += "%s <= %s;\n"%(i.name,i.connection.out_block[i.connection.ind_output].name)
+            fileText += "%s <= %s__%s;\n"%(i.name,i.connection.out_block.name,i.connection.out_block.output_ports[i.connection.ind_output].name)
 
         fileText += "end Arq_%s;\n"%self.name
 
-        print("\nGENERATED CODE\n")
-        print(fileText)
+        # print("\nGENERATED CODE\n")
+        # print(fileText)
+        return fileText
 
 
     def __getitem__(self, name):

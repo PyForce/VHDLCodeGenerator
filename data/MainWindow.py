@@ -12,6 +12,7 @@ import importlib
 import pickle
 import _pickle
 import data.constants
+import data.NewProject
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -50,9 +51,11 @@ class MainWindow(QMainWindow):
         self.ui.BlockBox.closeEvent = lambda event: self.ui.action_Block_Box.toggle()
         self.ui.Explorer.closeEvent = lambda event: self.ui.actionExplorer.toggle()
 
+        self.ui.action_Save.triggered.connect(self.save)
         self.ui.action_New_System.triggered.connect(self.create)
         self.ui.action_Load.triggered.connect(self.loadProject)
         self.ui.actionDefault.triggered.connect(self.setDefaultMode)
+        self.ui.action_Generate_Code.triggered.connect(self.buildVHDLCode)
         self.ui.tabExplorer.tabCloseRequested.connect(self.removeTab)
         self.ui.tabExplorer.currentChanged.connect(self.changeTab)
 
@@ -72,6 +75,16 @@ class MainWindow(QMainWindow):
     #     toolBar = QToolBar(self)
     #     toolBar.setAllowedAreas(Qt.TopToolBarArea)
     #     self.layout().addWidget(toolBar)
+
+    def buildVHDLCode(self):
+        print(self.currentProject.system.buildVHDLCode())
+
+    def save(self):
+        try:
+            print("IT WILL SAVE")
+            # self.currentProject.save()
+        except AttributeError:
+            print("There is no project selected")
 
     def setDefaultMode(self):
         self.state = data.constants.DEFAULT_MODE
@@ -286,7 +299,7 @@ class MainWindow(QMainWindow):
     def create(self):
         """ Call the Project Creator Window.
         """
-        projectCreator = NProjectWindow(self)
+        projectCreator = data.NewProject.NProjectWindow(self)
         projectCreator.show()
 
     def createProject(self,name,input_info,output_info):
@@ -323,6 +336,7 @@ class MainWindow(QMainWindow):
 
         if self.state == data.constants.BLOCK_INSERTION:
             block = self.dynamicBlock(self.currentProject.system,*self.parameters)
+            self.currentProject.system.block.append(block)
             block.screenPos = x,y
             visualBlock = QBlock(block, self.currentProject.view)
             self.currentProject.scene.addItem(visualBlock)

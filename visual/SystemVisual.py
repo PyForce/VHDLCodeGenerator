@@ -17,6 +17,7 @@ from data.MainWindow import *
 WIDTH = 100
 HEIGHT = 50
 
+
 class QSystem(QGraphicsItem):
     COLOR = 0,200,30,20 # Red, Green, Blue, Alpha
     PORTLEN = 20

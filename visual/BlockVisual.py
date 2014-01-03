@@ -97,6 +97,10 @@ class QBlock(QGraphicsItem):
         # di = self.height/(len(self.block.input_ports) + 1)
         # do = self.height/(len(self.block.output_ports) + 1)
 
+class ExternalBlock(QBlock):
+    def __init__(self,block,view = None):
+        super().__init__(block,view)
+
 class QPin(QGraphicsLineItem):
     # selected = pyqtSignal(QPin)
 
