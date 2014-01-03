@@ -9,7 +9,7 @@ import visual.BlockVisual
 import data.constants
 
 class QView(QGraphicsView):
-    def __init__(self, parent = None):
+    def __init__(self,project, parent = None):
         super().__init__(parent)
         # self.setDragMode(QGraphicsView.ScrollHandDrag)
         self.drawConn = False       # True if connection is drawing
@@ -18,6 +18,8 @@ class QView(QGraphicsView):
 
         self.lineSource = ()        # Source coordinates
         self.currentItem = None     # Source item
+
+        self.project = project      # Project where is the view.
 
     def beginLine(self):
         print("BEGIN LINE")
@@ -38,9 +40,8 @@ class QView(QGraphicsView):
         super().mouseMoveEvent(event)
         item = self.scene().itemAt(self.mapToScene(event.pos()))
 
-        if isinstance(item,visual.BlockVisual.QPin):
+        if isinstance(item,visual.BlockVisual.QPin) and self.mode == data.constants.DEFAULT_MODE:
             self.setCursor(Qt.CrossCursor)
-            print("Dime algo")
         else:
             self.setCursor(Qt.ArrowCursor)
 
@@ -55,18 +56,9 @@ class QView(QGraphicsView):
         print("Estoy aqui!!!!!!!!!")
         item = self.itemAt(event.pos())
         if isinstance(item,visual.BlockVisual.QPin) and self.mode == data.constants.DEFAULT_MODE:
-            print(item.block)
-            print(item.index)
-            print(item.mode)
-            print("Im a QPin")
-            # coord = self.mapToScene(event.pos().x(), event.pos().y())
-            # self.beginLine(coord.x(), coord.y())
             self.currentItem = item
-            # self.lineSource = item.x1,item.y1
-            # self.beginLine(item.x1,item.y1)
             self.beginLine()
-            self.setDragMode(self.NoDrag)
-
+            # self.setDragMode(self.NoDrag)
 
     def mouseReleaseEvent(self, event):
         super().mouseReleaseEvent(event)
@@ -77,26 +69,44 @@ class QView(QGraphicsView):
             self.setDragMode(self.ScrollHandDrag)
 
             item = self.itemAt(event.pos())
-            print("Item size:%d\nItem2 Size:%d"%(item.getSize(),self.currentItem.getSize()))
+            # print("Item size:%d\nItem2 Size:%d"%(item.getSize(),self.currentItem.getSize()))
 
             if isinstance(item, visual.BlockVisual.QPin) and item.mode != self.currentItem.mode and item.getSize() == self.currentItem.getSize():
+                # inputItem & outputItem are QPin
                 if item.mode == data.constants.IN:
                     inputItem = item
                     outputItem = self.currentItem
                 else:
                     inputItem = self.currentItem
                     outputItem = item
+
+                # Print
+                print("Pins after endLine")
+                inputItem.getPort()
+                outputItem.getPort()
+                print(".;.;.;.;.;.;")
+
+
                 if inputItem.getPort().connection == None:
                     print("ESTABLISHING CONNECTION BETWEEN %s & %s"%(str(inputItem),str(outputItem)))
-                    # TODO: Establish full connection (Abstract and visual)
-                    # ABSTRACT CONNECTION
 
                     # VISUAL CONNECTION
-                    x1,y1 = self.currentItem.x1,self.currentItem.y1
-                    x2,y2 = item.x1, item.y1
-                    self.scene().addItem(QGraphicsLineItem(x1,y1,x2,y2))
+                    visualConnection = QGraphicsLineItem()
+                    QView.paintConnection(inputItem,outputItem,visualConnection)
+                    self.scene().addItem(visualConnection)
+
+                    # ABSTRACT CONNECTION
+                    system = self.project.system
+                    system.connect(outputItem.getAbstractBlock(),outputItem.index,inputItem.getAbstractBlock(),inputItem.index,visualConnection)
 
             self.currentItem = None
+
+    @staticmethod
+    def paintConnection(item1,item2,line):
+        x1,y1 = item1.x1,item1.y1
+        x2,y2 = item2.x1, item2.y1
+        line.setLine(x1,y1,x2,y2)
+
 
     def wheelEvent(self, event):
         if event.delta() > 0:

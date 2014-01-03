@@ -33,7 +33,7 @@ class IProject:
         realName = self.name.split('.')[0]  # The name of the project without the extension
         self.system = _System(realName,input_vector,output_vector)
         self.scene = GraphicsScene()
-        self.view = QView()
+        self.view = QView(self)
         self.view.setScene(self.scene)
         self.initializeView(self.view)
 

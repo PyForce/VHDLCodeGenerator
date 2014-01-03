@@ -146,6 +146,7 @@ class Port:
         self.name = name
         self.size = size
         self.mode = mode
+        self.pin = None
 
         if self.mode == IN:
             self.connection = None

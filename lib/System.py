@@ -28,7 +28,7 @@ class System:
         self.conn_name = set()  # The name of all connections on the system
 
         self.block = []         # Block list of the system
-        self.connections = []   # Connection list of the system
+        self.connections = {}   # Connection dictionary of the system <Abstract Connection: QGraphicsLineItem>
         self.system_input = _Block([size for name,size in input_info],(),self)
         self.system_input.setName("SystemInput")
         self.system_output = _Block((),[size for name,size in output_info],self)
@@ -152,7 +152,7 @@ class System:
             except ValueError:
                 return -1
 
-    def connect(self,output_block,ind_output,input_block,ind_input):
+    def connect(self,output_block,ind_output,input_block,ind_input,visualConnection = None):
         """
         :param output_block:
         :param ind_output:
@@ -161,5 +161,6 @@ class System:
         """
         conn = _Connection(output_block,ind_output,input_block,ind_input,self)  # Creating the connection between 2 blocks
         output_block.output_ports[ind_output].connection.append(conn)  # Linking the connection with the output block
-        input_block.input_ports[ind_input] = conn                      # Linking the connection with the input block
-        self.connections.append(conn)   # Adding the connection to the connection list (on the system)
+        input_block.input_ports[ind_input].connection = conn           # Linking the connection with the input block
+        self.connections.update({conn:visualConnection})   # Adding the connection to the connection list (on the system)
+        return conn

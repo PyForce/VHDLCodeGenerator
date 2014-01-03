@@ -37,7 +37,7 @@ class Multiplexer(Block):
         self.enablerActiveSymbol = enablerActiveSymbol
         self.enabler = enabler
         self.numMuxIn = numInput
-        self.selBits = len(bin(numInput)) - 2    # Binary Input Selector
+        self.selBits = len(bin(numInput - 1)) - 2    # Binary Input Selector
         self.name = "Multiplexer"
         self.HiZ = "Z"*sizeInput
 
