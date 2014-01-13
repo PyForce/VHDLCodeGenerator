@@ -228,7 +228,7 @@ class MainWindow(QMainWindow):
                 #Standard Block
                 if self.isStandardBlock(curPath):
                     fileItems.append((child,self.standardIco))
-                    self.blocks.append((child,curPath,data.constants.STATIC_BLOCK,None))
+                    self.tempBlocks.append((child,curPath,data.constants.STATIC_BLOCK,None))
                     files = True
                 # Parametric Block
                 elif self.isParameterBlock(curPath):
@@ -238,14 +238,14 @@ class MainWindow(QMainWindow):
 
                     if mod != None:
                         fileItems.append((child,self.parameterIco))
-                        self.blocks.append((child,curPath,data.constants.PARAMETRIC_BLOCK,mod))
+                        self.tempBlocks.append((child,curPath,data.constants.PARAMETRIC_BLOCK,mod))
                         files = True
                 else:
                     mod = self.isDynamicBlock(curPath)
                     # Dynamic Block
                     if mod:
                         fileItems.append((child,self.dynamicIco))
-                        self.blocks.append((child,curPath,data.constants.DYNAMIC_BLOCK,mod))
+                        self.tempBlocks.append((child,curPath,data.constants.DYNAMIC_BLOCK,mod))
                         files = True
         for i in dirItems:
             item.addChild(i)
@@ -267,6 +267,9 @@ class MainWindow(QMainWindow):
                     self.ui.blockTree.addTopLevelItem(item)
                 os.chdir("..")
         os.chdir("..")
+
+        self.blocks = self.tempBlocks
+        self.tempBlocks = []
 
     def findModule(self,name):
         """ Find a dynamic block with the given name and return the loaded module
