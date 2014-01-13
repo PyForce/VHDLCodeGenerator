@@ -262,12 +262,8 @@ class MainWindow(QMainWindow):
         """
         return self.parameterData(path)[0]
 
-
-
     def loadBlocks(self):
-
         os.chdir("blocks")
-
         path = os.getcwd()
         for i in os.listdir():
             if os.path.isdir(i):
@@ -278,7 +274,6 @@ class MainWindow(QMainWindow):
                 if self.__loadBlockFromDir__(item,os.path.join(path,i)):
                     self.ui.blockTree.addTopLevelItem(item)
                 os.chdir("..")
-
         os.chdir("..")
 
     def loadProject(self):
