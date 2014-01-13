@@ -13,6 +13,7 @@ import pickle
 import _pickle
 import data.constants
 import data.NewProject
+import plugin.parametrizer
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -30,7 +31,7 @@ class MainWindow(QMainWindow):
 
         self.defaultDirectory = os.getenv("USERPROFILE") + r"\VHDL Code Generator\Projects"
 
-        self.blocks = []    # Reference to the blocks to be loaded. <QItem:Path,Type>
+        self.blocks = []    # Reference to the blocks to be loaded. <QItem:Path,Type,Mod>
 
         self.state = data.constants.DEFAULT_MODE
 
@@ -51,6 +52,8 @@ class MainWindow(QMainWindow):
         self.ui.BlockBox.closeEvent = lambda event: self.ui.action_Block_Box.toggle()
         self.ui.Explorer.closeEvent = lambda event: self.ui.actionExplorer.toggle()
 
+
+        self.ui.actionBlock_Parametrizer.triggered.connect(plugin.parametrizer.exec)
         self.ui.action_Save.triggered.connect(self.save)
         self.ui.action_New_System.triggered.connect(self.create)
         self.ui.action_Load.triggered.connect(self.loadProject)
@@ -58,7 +61,6 @@ class MainWindow(QMainWindow):
         self.ui.tabExplorer.tabCloseRequested.connect(self.removeTab)
         self.ui.tabExplorer.currentChanged.connect(self.changeTab)
 
-        # TODO: Aqui meti las manos pa empacotillar un poco el cambio de modo
         self.ui.action_Set_Default_Mode.triggered.connect(self.setDefaultMode)
         self.setDefaultModeIcon = QIcon("resources\\default_cursor.png")
         self.ui.toolBar.addAction(self.ui.action_Set_Default_Mode)
@@ -86,7 +88,7 @@ class MainWindow(QMainWindow):
         except AttributeError:
             print("There is no project selected")
 
-    def setDefaultMode(self): #TODO: Aqui tambien cambie
+    def setDefaultMode(self):
 
         if self.currentProject == None:
             self.ui.action_Set_Default_Mode.setChecked(False)
@@ -127,11 +129,20 @@ class MainWindow(QMainWindow):
         if type == data.constants.STATIC_BLOCK:
             pass
         elif type == data.constants.PARAMETRIC_BLOCK:
-            pass
+            self.loadParametricBlock(path,mod)
         elif type == data.constants.DYNAMIC_BLOCK:
             self.loadDynamicBlock(mod)
 
         # TODO: Set state to Block insertion if static and parametric mode, the view of the curProject too
+
+    def loadParametricBlock(self,path,mod):
+        print("Load Parametric Block")
+        print(path,mod)
+        self.dynamicBlock = mod.__getattribute__(mod.__className__)
+        self.parameters = self.parameterData(path)[1]
+        self.state = data.constants.BLOCK_INSERTION
+        self.ui.action_Set_Default_Mode.setChecked(False)
+
 
     def loadDynamicBlock(self,mod):
         print("Loading Dynamic Block")
@@ -145,7 +156,7 @@ class MainWindow(QMainWindow):
             self.parameters = args
             self.state = data.constants.BLOCK_INSERTION
             #self.currentProject.view.mode = self.state
-            self.ui.action_Set_Default_Mode.setChecked(False) #TODO: Here change
+            self.ui.action_Set_Default_Mode.setChecked(False)
 
     def loadIcons(self):
         self.standardIco = QIcon("resources\\standard.ico")
@@ -207,9 +218,14 @@ class MainWindow(QMainWindow):
                     files = True
                 # Parametric Block
                 elif self.isParameterBlock(curPath):
-                    fileItems.append((child,self.parameterIco))
-                    self.blocks.append((child,curPath,data.constants.PARAMETRIC_BLOCK,None))
-                    files = True
+                    # Loading the name of the class of the dynamic block that build it
+                    dynamicBlockName = self.parameterName(curPath)
+                    mod = self.findModule(dynamicBlockName)
+
+                    if mod != None:
+                        fileItems.append((child,self.parameterIco))
+                        self.blocks.append((child,curPath,data.constants.PARAMETRIC_BLOCK,mod))
+                        files = True
                 else:
                     mod = self.isDynamicBlock(curPath)
                     # Dynamic Block
@@ -223,6 +239,30 @@ class MainWindow(QMainWindow):
             item.addChild(i)
             i.setIcon(0,j)
         return files
+
+    def findModule(self,name):
+        """ Find a dynamic block with the given name and return the loaded module
+            of it.
+        """
+        for child,path,_type,mod in self.blocks:
+            if name == mod.__className__:
+                print(path)
+                return mod
+        return None
+
+    def parameterData(self,path):
+        """ Get the name and arguments of the dynamic block that build the parametric block chosen
+        """
+        file = open(path,'rb')
+        name,args = pickle.load(file)
+        return name,args
+
+    def parameterName(self,path):
+        """ Get the name of the dynamic block that build the parametric block chosen
+        """
+        return self.parameterData(path)[0]
+
+
 
     def loadBlocks(self):
 
@@ -338,17 +378,18 @@ class MainWindow(QMainWindow):
         pos = event.scenePos()
         x = int(pos.x())
         y = int(pos.y())
-        print(x,y)
         elements = curScene.itemAt(x,y)
-        print(elements)
 
         if self.state == data.constants.BLOCK_INSERTION:
+            print(self.dynamicBlock)
+            print(self.parameters)
             block = self.dynamicBlock(self.currentProject.system,*self.parameters)
             self.currentProject.system.block.append(block)
             block.screenPos = x,y
             visualBlock = QBlock(block, self.currentProject.view)
             self.currentProject.scene.addItem(visualBlock)
             visualBlock.setPos(x,y)
+            self.setDefaultMode()
 
         elif self.state == data.constants.DEFAULT_MODE:
             pass

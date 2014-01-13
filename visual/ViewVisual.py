@@ -57,7 +57,6 @@ class QView(QGraphicsView):
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
-        print("Estoy aqui!!!!!!!!!")
         item = self.itemAt(event.pos())
         if isinstance(item,visual.BlockVisual.QPin) and self.mode() == data.constants.DEFAULT_MODE:
             self.currentItem = item

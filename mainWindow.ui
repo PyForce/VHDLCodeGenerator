@@ -76,9 +76,16 @@
     </property>
     <addaction name="action_About"/>
    </widget>
+   <widget class="QMenu" name="menuPlugin">
+    <property name="title">
+     <string>Plugin</string>
+    </property>
+    <addaction name="actionBlock_Parametrizer"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_View"/>
    <addaction name="menu_Generate"/>
+   <addaction name="menuPlugin"/>
    <addaction name="menu_About"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -248,6 +255,11 @@
    </property>
    <property name="toolTip">
     <string>Set Default Mode</string>
+   </property>
+  </action>
+  <action name="actionBlock_Parametrizer">
+   <property name="text">
+    <string>Block Parametrizer</string>
    </property>
   </action>
  </widget>
