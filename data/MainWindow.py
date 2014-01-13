@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
         self.defaultDirectory = os.getenv("USERPROFILE") + r"\VHDL Code Generator\Projects"
 
         self.blocks = []    # Reference to the blocks to be loaded. <QItem:Path,Type,Mod>
+        self.tempBlocks = []
 
         self.state = data.constants.DEFAULT_MODE
 
@@ -72,11 +73,24 @@ class MainWindow(QMainWindow):
         self.ui.blockTree.setHeaderLabels(["Blocks"])
         self.ui.blockTree.itemDoubleClicked.connect(self.blockSelected)
         self.loadBlocks()
+        self.refreshBlocks()
         print(self.blocks)
 
         # Explorer
         self.ui.explorerTree.setHeaderLabels(["Project Explorer"])
         self.ui.explorerTree.itemDoubleClicked.connect(self.projectSelected)
+
+    def parametrizer(self):
+        plugin.parametrizer.exec()
+        self.refreshBlocks()
+        print("QUE VOLA")
+
+    def refreshBlocks(self):
+        print("REFRESHING")
+        print(len(self.blocks))
+        self.ui.blockTree.clear()
+        self.loadBlocks()
+        print(len(self.blocks))
 
     def buildVHDLCode(self):
         print(self.currentProject.system.buildVHDLCode())
@@ -240,6 +254,20 @@ class MainWindow(QMainWindow):
             i.setIcon(0,j)
         return files
 
+    def loadBlocks(self):
+        os.chdir("blocks")
+        path = os.getcwd()
+        for i in os.listdir():
+            if os.path.isdir(i):
+                os.chdir(i)
+                item = QTreeWidgetItem([i])
+                item.setIcon(0,self.folderIco)
+                item.path = None
+                if self.__loadBlockFromDir__(item,os.path.join(path,i)):
+                    self.ui.blockTree.addTopLevelItem(item)
+                os.chdir("..")
+        os.chdir("..")
+
     def findModule(self,name):
         """ Find a dynamic block with the given name and return the loaded module
             of it.
@@ -261,20 +289,6 @@ class MainWindow(QMainWindow):
         """ Get the name of the dynamic block that build the parametric block chosen
         """
         return self.parameterData(path)[0]
-
-    def loadBlocks(self):
-        os.chdir("blocks")
-        path = os.getcwd()
-        for i in os.listdir():
-            if os.path.isdir(i):
-                os.chdir(i)
-                item = QTreeWidgetItem([i])
-                item.setIcon(0,self.folderIco)
-                item.path = None
-                if self.__loadBlockFromDir__(item,os.path.join(path,i)):
-                    self.ui.blockTree.addTopLevelItem(item)
-                os.chdir("..")
-        os.chdir("..")
 
     def loadProject(self):
         if os.path.exists(self.defaultDirectory):

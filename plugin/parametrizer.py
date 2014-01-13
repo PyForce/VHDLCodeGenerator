@@ -2,12 +2,14 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import uic
 
+import pickle
 import os
 
 class Parametrizer(QWidget):
     def __init__(self):
         super().__init__()
 
+        self.name = None
         self.ui = uic.loadUi(r'plugin\parametrizer.ui',self)
         self.setWindowTitle("Parametrizer")
 
@@ -15,7 +17,6 @@ class Parametrizer(QWidget):
         self.ui.blockTree.setHeaderLabel("")
         self.loadIcons()
         self.loadBlocks()
-
 
     def loadIcons(self):
         self.dynamicIco = QIcon("resources\\dynamic.ico")
@@ -30,29 +31,25 @@ class Parametrizer(QWidget):
             if os.path.isdir(i):
                 os.chdir(i)
                 child = QTreeWidgetItem([i])
-                # child.setIcon(0,self.folderIco)
                 child.path = None
                 if self.__loadBlockFromDir__(child,os.path.join(path,i)):
                     dirItems.append(child)
-                    # item.addChild(child)
                     files = True
                 os.chdir("..")
             else:
                 name = os.path.splitext(i)[0]
                 child = QTreeWidgetItem([name])
 
-
                 mod = self.isDynamicBlock(curPath)
-                # Dynamic Block
                 if mod:
-                    # fileItems.append((child,None))
-                    fileItems.append((child,self.dynamicIco))
+                    fileItems.append((child,self.dynamicIco,mod))
                     # self.blocks.append((child,curPath,data.constants.DYNAMIC_BLOCK,mod))
                     files = True
 
         for i in dirItems:
             item.addChild(i)
-        for i,j in fileItems:
+        for i,j,mod in fileItems:
+            i.mod = mod
             item.addChild(i)
             i.setIcon(0,j)
         return files
@@ -86,11 +83,30 @@ class Parametrizer(QWidget):
                 os.chdir("..")
         os.chdir("..")
 
+    @staticmethod
+    def validate(path):
+        # TODO: It can't be two equal names.
+        return True
 
     def ok(self):
-        print("ACCEPT")
+        try:
+            item = self.ui.blockTree.selectedItems()[0]
+            self.mod = item.mod
+            print(self.mod.__className__)
 
+            self.name = self.ui.lineEdit.text()
+            if Parametrizer.validate(self.name):
+                win = self.mod.__getattribute__(self.mod.__win__)()
+                win.show()
+                win.accept.connect(self.save)
+        except:
+            print("INVALID ACCEPT")
 
+    def save(self,args):
+        f = open('blocks\\Parametric Library\\' + self.name + '.pvb','wb')
+        name = self.mod.__className__
+        pickle.dump((name,args),f)
+        f.close()
 
 def exec():
     param = Parametrizer()
