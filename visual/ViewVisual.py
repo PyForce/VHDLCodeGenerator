@@ -14,12 +14,16 @@ class QView(QGraphicsView):
         # self.setDragMode(QGraphicsView.ScrollHandDrag)
         self.drawConn = False       # True if connection is drawing
         self.currentLine = None     # Active line
-        self.mode = data.constants.DEFAULT_MODE
+        #self.mode = data.constants.DEFAULT_MODE
 
         self.lineSource = ()        # Source coordinates
         self.currentItem = None     # Source item
 
         self.project = project      # Project where is the view.
+
+    def mode(self):
+        # Return the mode
+        return self.project.mainWindow.state
 
     def beginLine(self):
         print("BEGIN LINE")
@@ -40,7 +44,7 @@ class QView(QGraphicsView):
         super().mouseMoveEvent(event)
         item = self.scene().itemAt(self.mapToScene(event.pos()))
 
-        if isinstance(item,visual.BlockVisual.QPin) and self.mode == data.constants.DEFAULT_MODE:
+        if isinstance(item,visual.BlockVisual.QPin) and self.mode() == data.constants.DEFAULT_MODE:
             self.setCursor(Qt.CrossCursor)
         else:
             self.setCursor(Qt.ArrowCursor)
@@ -55,7 +59,7 @@ class QView(QGraphicsView):
         super().mousePressEvent(event)
         print("Estoy aqui!!!!!!!!!")
         item = self.itemAt(event.pos())
-        if isinstance(item,visual.BlockVisual.QPin) and self.mode == data.constants.DEFAULT_MODE:
+        if isinstance(item,visual.BlockVisual.QPin) and self.mode() == data.constants.DEFAULT_MODE:
             self.currentItem = item
             self.beginLine()
             # self.setDragMode(self.NoDrag)

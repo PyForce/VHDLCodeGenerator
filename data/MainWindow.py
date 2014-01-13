@@ -54,10 +54,15 @@ class MainWindow(QMainWindow):
         self.ui.action_Save.triggered.connect(self.save)
         self.ui.action_New_System.triggered.connect(self.create)
         self.ui.action_Load.triggered.connect(self.loadProject)
-        self.ui.actionDefault.triggered.connect(self.setDefaultMode)
         self.ui.action_Generate_Code.triggered.connect(self.buildVHDLCode)
         self.ui.tabExplorer.tabCloseRequested.connect(self.removeTab)
         self.ui.tabExplorer.currentChanged.connect(self.changeTab)
+
+        # TODO: Aqui meti las manos pa empacotillar un poco el cambio de modo
+        self.ui.action_Set_Default_Mode.triggered.connect(self.setDefaultMode)
+        self.setDefaultModeIcon = QIcon("resources\\default_cursor.png")
+        self.ui.toolBar.addAction(self.ui.action_Set_Default_Mode)
+        self.ui.action_Set_Default_Mode.setIcon(self.setDefaultModeIcon)
 
         ### Tree Widget ###
 
@@ -71,11 +76,6 @@ class MainWindow(QMainWindow):
         self.ui.explorerTree.setHeaderLabels(["Project Explorer"])
         self.ui.explorerTree.itemDoubleClicked.connect(self.projectSelected)
 
-    # def initializeToolBar(self):
-    #     toolBar = QToolBar(self)
-    #     toolBar.setAllowedAreas(Qt.TopToolBarArea)
-    #     self.layout().addWidget(toolBar)
-
     def buildVHDLCode(self):
         print(self.currentProject.system.buildVHDLCode())
 
@@ -86,10 +86,19 @@ class MainWindow(QMainWindow):
         except AttributeError:
             print("There is no project selected")
 
-    def setDefaultMode(self):
-        self.state = data.constants.DEFAULT_MODE
-        self.ui.actionDefault.setChecked(True)
-        self.currentProject.view.mode = self.state
+    def setDefaultMode(self): #TODO: Aqui tambien cambie
+
+        if self.currentProject == None:
+            self.ui.action_Set_Default_Mode.setChecked(False)
+            message = QMessageBox(self)
+            message.setWindowTitle("WARNING")
+            message.setIcon(QMessageBox.Warning)
+            message.setText("There is no selected project")
+            message.exec()
+        else:
+            self.state = data.constants.DEFAULT_MODE
+            self.ui.action_Set_Default_Mode.setChecked(True)
+            #self.currentProject.view.mode = self.state
 
     def blockSelected(self,item,column):
         if self.currentProject == None:
@@ -132,12 +141,11 @@ class MainWindow(QMainWindow):
         win.accept.connect(self.loadParameters)
 
     def loadParameters(self,args):
-        self.parameters = args
-
-        self.state = data.constants.BLOCK_INSERTION
-        self.currentProject.view.mode = self.state
-
-        self.ui.actionDefault.setChecked(False)
+        if args != None:
+            self.parameters = args
+            self.state = data.constants.BLOCK_INSERTION
+            #self.currentProject.view.mode = self.state
+            self.ui.action_Set_Default_Mode.setChecked(False) #TODO: Here change
 
     def loadIcons(self):
         self.standardIco = QIcon("resources\\standard.ico")

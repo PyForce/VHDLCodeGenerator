@@ -43,6 +43,45 @@ class Block:
         # Position on the screen to visualize the block
         self.screenPos = (0,0)
 
+    def getVariableSignalSize(self,index):
+        return self.variables[index][1]
+
+    def getOutputSignalSize(self,index):
+        return self.getOutputPort(index).size
+
+    def getInputSignalSize(self,index):
+        return self.getInputPort(index).size
+
+    def getVariableSignalName(self,index):
+        return self.getSignalName(self.variables[index][0])
+
+    def getOutputSignalName(self,index):
+        return self.getSignalName(self.getOutputPort(index).name)
+
+    def getInputSignalName(self,index):
+        return self.getSignalName(self.getInputPort(index).name)
+
+    def getSignalName(self,name):
+        """ Valid name of the signal to be implemented on the VHDL Code
+        """
+        return "%s__%s"%(self.name,name)
+
+    # TODO: validate the name, there cant be 2 ports with the same name (Variables too)
+    def addVariable(self,name,size):
+        self.variables.append((name,size))
+
+    def setInputName(self,name,index):
+        self.getInputPort(index).name = name
+
+    def setOutputName(self,name,index):
+        self.getOutputPort(index).name = name
+
+    def getInputPort(self,index):
+        return self.input_ports[index]
+
+    def getOutputPort(self,index):
+        return self.output_ports[index]
+
     def getCoords(self,mode,index):
         if mode == IN:
             return self.screenPos[0] - QBlock.PORT_SIZE,self.screenPos[1] + (index + 1)*(QBlock.DX*(max(len(self.block.input_ports), len(self.block.output_ports))+1)/len(self.input_ports))
@@ -61,11 +100,6 @@ class Block:
                 return name
             else:
                 ind += 1
-
-    def getConnection(self):
-        """ Return a
-        """
-
     def generate(self):
         """ Method to be overridden. It generates the VHDL code.
         """
@@ -89,7 +123,7 @@ class Block:
         return signals
 
     def __getitem__(self, name):
-        """ Find a port for his name.
+        """ Find a port for its name.
             This function starts for input ports.
             If the port exist it returns the reference to the port & mode(IN/OUT)
             Else it returns -1

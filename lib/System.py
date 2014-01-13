@@ -50,7 +50,7 @@ class System:
         self.output_info = output_info
         self.input_names = [name for name,size in input_info]
         self.output_names = [name for name,size in output_info]
-        self.includedLibrary = ["IEEE.std_logic_1164.all"]
+        self.includedLibrary = ["ieee.std_logic_1164.all"] #TODO: Revisar esto, hay que modificarlo
 
     def buildVHDLCode(self):
         """ Building the code that will be generated.
@@ -58,40 +58,40 @@ class System:
         fileText = lib.signature.signature()
 
         # Including libraries
-        fileText += "-- Including libraries\nlibrary IEEE;\n"
+        fileText += "-- Including libraries\nLIBRARY ieee;\n"
 
         for i in self.includedLibrary:
-            fileText += "use %s;\n"%i
+            fileText += "USE %s;\n"%i
 
         fileText += "\n"
-        fileText += "entity %s is\n"%self.name
+        fileText += "ENTITY %s IS\n"%self.name
 
         fileText += "-- Generating ports\n"
-        fileText += "port (\n"
+        fileText += "PORT (\n"
 
         # Generating input ports
         for i in self.system_input.output_ports:
-            fileText += "%s : in std_logic%s;\n"%(i.name,"" if i.size == 1 else "_vector(%d downto 0)"%(i.size - 1))
+            fileText += "%s: IN std_logic%s;\n"%(i.name,"" if i.size == 1 else "_vector(%d downto 0)"%(i.size - 1)) #TODO: Aqui cambie
 
         # Generating output ports
         for i in self.system_output.input_ports:
-            fileText += "%s : out std_logic%s;\n"%(i.name,"" if i.size == 1 else "_vector(%d downto 0)"%(i.size - 1))
+            fileText += "%s: OUT std_logic%s;\n"%(i.name,"" if i.size == 1 else "_vector(%d downto 0)"%(i.size - 1)) #TODO: Aqui cambie
 
         fileText = fileText[:-2]
         fileText += ");\n"
-        fileText += "end %s;\n"%self.name
+        fileText += "END %s;\n"%self.name
 
         # Architecture Implementation
         fileText += "\n-- Architecture Implementation\n"
-        fileText += "architecture Arq_%s of %s is\n"%(self.name,self.name)
-        fileText += "begin\n"
+        fileText += "ARCHITECTURE Arq_%s OF %s IS\n"%(self.name,self.name)
+        fileText += "BEGIN\n"
 
         # Port declaration
         fileText += "-- Port declaration\n"
 
         # TODO: Overrated RAM
         for i in self.block:
-            fileText += "\n-- Declaring %s ports & temporary signals\n"%(i.name)
+
             signals = i.getSignals()
             inputSig = []
             outputSig = []
@@ -103,18 +103,19 @@ class System:
                     outputSig.append((name,size))
                 else:
                     tempSig.append((name,size))
+            fileText += "\n-- Declaring %s's ports%s\n"%(i.name," & temporary signals" if len(tempSig) != 0 else "") #TODO: Aqui cambie y moví la linea de lugar
 
             fileText += "-- Input ports\n"
             for name,size in inputSig:
-                fileText += "signal %s__%s : std_logic%s;\n"%(i.name, name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1))
+                fileText += "signal %s__%s: std_logic%s;\n"%(i.name,name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1)) #TODO: Aqui cambie
 
             fileText += "\n-- Output ports\n"
             for name,size in outputSig:
-                fileText += "signal %s__%s : std_logic%s;\n"%(i.name, name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1))
-
-            fileText += "\n-- Temporary signals\n"
-            for name,size in tempSig:
-                fileText += "signal %s__%s : std_logic%s;\n"%(i.name, name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1))
+                fileText += "signal %s__%s: std_logic%s;\n"%(i.name,name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1)) #TODO: Aqui cambie
+            if len(tempSig) != 0: #TODO: Aqui cambie
+                fileText += "\n-- Temporary signals\n"
+                for name,size in tempSig:
+                    fileText += "signal %s__%s: std_logic%s;\n"%(i.name,name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1)) #TODO: Aqui cambie
 
         # Defining connections
         fileText += "\n-- Defining connections\n"
@@ -142,7 +143,7 @@ class System:
         for i in self.system_output.input_ports:
             fileText += "%s <= %s__%s;\n"%(i.name,i.connection.out_block.name,i.connection.out_block.output_ports[i.connection.ind_output].name)
 
-        fileText += "end Arq_%s;\n"%self.name
+        fileText += "END Arq_%s;\n"%self.name
 
         # print("\nGENERATED CODE\n")
         # print(fileText)

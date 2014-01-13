@@ -25,7 +25,7 @@ class Multiplexer(Block):
         """
 
         :param name:
-        :param muxInput:    Number of input
+        :param muxInput:    Total of multiplexed input
         :param size:        Size of each input
         :param system:
         :stdLogic defaultOutput: It only can be 0/1/Z
@@ -43,35 +43,36 @@ class Multiplexer(Block):
 
 
         input_vector = [sizeInput]*self.numMuxIn + [self.selBits] + ([1] if enabler else [])
-        super().__init__(input_vector,[sizeInput],system,self.name)
-        self.input_ports[self.numMuxIn].name = "SELECT"
+        output_vector = [sizeInput]
+        super().__init__(input_vector,output_vector,system,self.name)
+
+        # Settings port names
+        self.setInputName("SELECT",self.numMuxIn)
+
         if self.enabler == True:
-            self.input_ports[self.numMuxIn + 1].name = "EN"
+            self.setInputName("EN",self.numMuxIn + 1)
+
+        self.setOutputName("out",0)
         self.variables = [("CHOSEN",sizeInput)]
 
     def generate(self):
         filetext = ""
         if self.enabler == False:
-            filetext += "%s <= "%(self.name + "__" + self.output_ports[0].name)
+            filetext += "%s <= "%(self.getOutputSignalName(0))
             for i in range(self.numMuxIn):
                 selbinary = bin(i)[2:]
-                filetext += "%s when (%s = %s) else\n"%((self.name + "__" + self.input_ports[i].name),(self.name+ "__" + self.input_ports[self.numMuxIn].name),"'"+selbinary+"'" if self.input_ports[self.numMuxIn].size == 1 else '"'+selbinary+'"')
-            filetext += "&s when others;\n"%(("'"+self.defaultOutput+"'") if (len(self.defaultOutput) == 1) else ('"'+self.defaultOutput+'"'))
+                filetext += "%s when (%s = %s) else\n"%(self.getInputSignalName(i),self.getInputSignalName(self.numMuxIn),"'"+selbinary+"'" if self.getInputSignalSize(self.numMuxIn) == 1 else '"'+selbinary+'"')
+            filetext += "%s when others;\n"%(("'"+self.defaultOutput+"'") if (len(self.defaultOutput) == 1) else ('"'+self.defaultOutput+'"'))
         else:
             filetext += "%s <= "%(self.name + "__" + self.variables[0][0])
             for i in range(self.numMuxIn):
                 selbinary = bin(i)[2:]
-                filetext += "%s when (%s = %s) else\n"%((self.name + "__" + self.input_ports[i].name),(self.name+ "__" + self.input_ports[self.numMuxIn].name),"'"+selbinary+"'" if self.input_ports[self.numMuxIn].size == 1 else '"'+selbinary+'"')
+                filetext += "%s when (%s = %s) else\n"%(self.getInputSignalName(i),self.getInputSignalName(self.numMuxIn),"'"+selbinary+"'" if self.getInputSignalSize(self.numMuxIn) == 1 else '"'+selbinary+'"')
             filetext += "%s when others;\n"%("'"+self.defaultOutput+"'" if len(self.defaultOutput) == 1 else '"'+self.defaultOutput+'"')
-            filetext += "%s <= %s when %s = %s else\n"%((self.name + "__" +self.output_ports[0].name),(self.name + "__" + self.variables[0][0]),(self.name + "__" + self.input_ports[self.numMuxIn + 1].name),("'"+self.enablerActiveSymbol+"'"))
+            filetext += "%s <= %s when %s = %s else\n"%(self.getOutputSignalName(0),self.getVariableSignalName(0),self.getInputSignalName(self.numMuxIn + 1),"'"+self.enablerActiveSymbol+"'")
             filetext += "%s when others;\n"%(("'"+self.HiZ+"'") if (len(self.HiZ) == 1) else ('"'+self.HiZ+'"'))
         return filetext
 
-
-    @staticmethod
-    def initializer(main):
-        win = MuxWindow()
-        win.show()
 
 class MuxWindow(QWidget):
     accept = pyqtSignal(list)

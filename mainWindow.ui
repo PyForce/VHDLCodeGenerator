@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>619</width>
+    <width>615</width>
     <height>511</height>
    </rect>
   </property>
@@ -40,7 +40,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>619</width>
+     <width>615</width>
      <height>21</height>
     </rect>
    </property>
@@ -76,17 +76,10 @@
     </property>
     <addaction name="action_About"/>
    </widget>
-   <widget class="QMenu" name="menuState">
-    <property name="title">
-     <string>State</string>
-    </property>
-    <addaction name="actionDefault"/>
-   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_View"/>
    <addaction name="menu_Generate"/>
    <addaction name="menu_About"/>
-   <addaction name="menuState"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QDockWidget" name="BlockBox">
@@ -113,6 +106,9 @@
      <width>150</width>
      <height>0</height>
     </size>
+   </property>
+   <property name="floating">
+    <bool>false</bool>
    </property>
    <property name="windowTitle">
     <string>Block Box</string>
@@ -154,6 +150,17 @@
      </item>
     </layout>
    </widget>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
   </widget>
   <action name="action_Close">
    <property name="text">
@@ -232,15 +239,15 @@
     <string>Save &amp;All</string>
    </property>
   </action>
-  <action name="actionDefault">
+  <action name="action_Set_Default_Mode">
    <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
    <property name="text">
-    <string>Default</string>
+    <string>Set Default Mode</string>
+   </property>
+   <property name="toolTip">
+    <string>Set Default Mode</string>
    </property>
   </action>
  </widget>

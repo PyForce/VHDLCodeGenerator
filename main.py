@@ -5,8 +5,7 @@
 #   LICENSE:   GNU-GPL V3
 #-------------------------------------------------------------------------------
 
-# .vcgp -> VHDL Code Generator Project,
-# .vcgproj is a bad formating
+# .vcgp -> VHDL Code Generator Project
 
 __author__ = "BlakeTeam"
 
@@ -37,3 +36,4 @@ if __name__ == '__main__':
 # TODO: ->	Incluir los labels necesarios a los bloques para mostrar su información
 # TODO: ->	Hacer el parametrizador y habilitar los bloques paramétricos
 # TODO: ->	Hacer el guardador de bloques estáticos (exportar)
+# TODO: ->  Prohibir el uso de "__" en los nombres de bloques y puertos y sistemas
