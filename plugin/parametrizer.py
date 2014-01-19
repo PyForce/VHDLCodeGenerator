@@ -107,6 +107,7 @@ class Parametrizer(QWidget):
         name = self.mod.__className__
         pickle.dump((name,args),f)
         f.close()
+        self.close()
 
 def exec():
     param = Parametrizer()

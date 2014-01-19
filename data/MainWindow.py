@@ -59,6 +59,7 @@ class MainWindow(QMainWindow):
         self.ui.action_New_System.triggered.connect(self.create)
         self.ui.action_Load.triggered.connect(self.loadProject)
         self.ui.action_Generate_Code.triggered.connect(self.buildVHDLCode)
+        self.ui.action_Export.triggered.connect(self.exportStaticBlock)
         self.ui.tabExplorer.tabCloseRequested.connect(self.removeTab)
         self.ui.tabExplorer.currentChanged.connect(self.changeTab)
 
@@ -79,6 +80,30 @@ class MainWindow(QMainWindow):
         # Explorer
         self.ui.explorerTree.setHeaderLabels(["Project Explorer"])
         self.ui.explorerTree.itemDoubleClicked.connect(self.projectSelected)
+
+    def exportStaticBlock(self):
+        if self.currentProject == None:
+            self.WARNSelectProject()
+
+        else:
+            name = self.currentProject.name
+            code = self.currentProject.system.exportVHDLCode()
+            signals = []
+
+            for i in self.currentProject.system.block:
+                signal = i.getSignals()
+                signals.append((signal[0],signal[1],data.constants.TEMP))
+
+            for i in self.currentProject.system.system_input.output_ports:
+                signals.append((i.name,i.size,data.constants.IN))
+
+            for i in self.currentProject.system.system_output.input_ports:
+                signals.append((i.name,i.size,data.constants.OUT))
+
+            staticBlock = lib.StaticBlock.StaticBlock(name,signals,code)
+            staticBlock.save()
+
+
 
     def parametrizer(self):
         plugin.parametrizer.exec()
@@ -116,14 +141,17 @@ class MainWindow(QMainWindow):
             self.ui.action_Set_Default_Mode.setChecked(True)
             #self.currentProject.view.mode = self.state
 
+    def WARNSelectProject(self):
+        message = QMessageBox(self)
+        message.setWindowTitle("WARNING")
+        message.setIcon(QMessageBox.Warning)
+        message.setText("There is no selected project")
+        message.exec()
+
+
     def blockSelected(self,item,column):
         if self.currentProject == None:
-            message = QMessageBox(self)
-            message.setWindowTitle("WARNING")
-            message.setIcon(QMessageBox.Warning)
-            message.setText("There is no selected project")
-            message.exec()
-
+            self.WARNSelectProject()
         else:
             founded = False
             for _item,path,type,mod in self.blocks:

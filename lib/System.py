@@ -112,7 +112,7 @@ class System:
             fileText += "\n-- Output ports\n"
             for name,size in outputSig:
                 fileText += "signal %s__%s: std_logic%s;\n"%(i.name,name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1)) #TODO: Aqui cambie
-            if len(tempSig) != 0: #TODO: Aqui cambie
+            if len(tempSig) != 0:
                 fileText += "\n-- Temporary signals\n"
                 for name,size in tempSig:
                     fileText += "signal %s__%s: std_logic%s;\n"%(i.name,name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1)) #TODO: Aqui cambie
@@ -149,6 +149,8 @@ class System:
         # print(fileText)
         return fileText
 
+    def exportVHDLCode(self):
+        return "code"
 
     def __getitem__(self, name):
         """ Find a port for his name.

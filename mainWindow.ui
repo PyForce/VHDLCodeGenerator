@@ -179,7 +179,7 @@
   </action>
   <action name="action_New_System">
    <property name="text">
-    <string>&amp;New System</string>
+    <string>&amp;New Project</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
