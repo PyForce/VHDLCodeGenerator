@@ -63,10 +63,10 @@ class DynamicBlockModel(Block):
         # getVariableSignalSize(self,index)
         # getOutputSignalSize(self,index)
         # getInputSignalSize(self,index)
+
     def generate(self):
         return ""
 
-#
 class WindowModel(QWidget):
     # QtSignal that will be emitted with a list of parameters to generate a block using the dynamic model
     accept = pyqtSignal(list)

@@ -29,7 +29,7 @@ class Bus(Block):
 
         self.numbits = numbits
         self.mode = mode
-        self.name = "Bus_" + mode
+        self.name = "Bus" + mode
 
         if self.mode == "Splitter":
             input_vector = [self.numbits]
@@ -42,11 +42,11 @@ class Bus(Block):
 
         if self.mode == "Splitter":
             for i in range (self.numbits):
-                self.setOutputName("bit_"+str(self.numbits-1-i),i)
+                self.setOutputName("bit"+str(self.numbits-1-i),i)
             self.setInputName("input_vector",0)
         else:
             for i in range (self.numbits):
-                self.setInputName("bit_"+str(self.numbits-1-i),i)
+                self.setInputName("bit"+str(self.numbits-1-i),i)
             self.setOutputName("output_vector",0)
 
 
@@ -55,7 +55,7 @@ class Bus(Block):
         filetext = ""
         if self.mode == "Splitter":
             for i in range(self.numbits):
-                filetext += "%s <= %s"%(self.getOutputSignalName(i),self.getInputSignalName(0)+"["+str(self.numbits -1 -i)+"];\n")
+                filetext += "%s <= %s"%(self.getOutputSignalName(i),self.getInputSignalName(0)+"("+str(self.numbits -1 -i)+");\n")
         else:
             filetext += "%s <= "%self.getOutputSignalName(0)
             for i in range(self.numbits):

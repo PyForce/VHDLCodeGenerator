@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>378</width>
+    <width>251</width>
     <height>143</height>
    </rect>
   </property>
@@ -113,12 +113,29 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>acceptButton</tabstop>
-  <tabstop>cancelButton</tabstop>
   <tabstop>name</tabstop>
   <tabstop>inputPorts</tabstop>
   <tabstop>outputPorts</tabstop>
+  <tabstop>acceptButton</tabstop>
+  <tabstop>cancelButton</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>name</sender>
+   <signal>returnPressed()</signal>
+   <receiver>acceptButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>143</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>66</x>
+     <y>101</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

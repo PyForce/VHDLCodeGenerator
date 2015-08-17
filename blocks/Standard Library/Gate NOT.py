@@ -29,7 +29,7 @@ class NOTGate(Block):
         :param size:        Size of each input
         :param system:
         """
-        self.name = "NOT_GATE"
+        self.name = "NOTGATE"
         self.sizeInput = sizeInput
 
 
@@ -45,7 +45,7 @@ class NOTGate(Block):
         else:
             filetext += "%s <= "%self.getOutputSignalName(0)
             for i in range (self.sizeInput):
-                filetext += "not %s[%d]"%(self.getInputSignalName(0),self.sizeInput-i-1)
+                filetext += "not %s(%d)"%(self.getInputSignalName(0),self.sizeInput-i-1)
                 if i != self.sizeInput - 1:
                     filetext += " & "
         filetext += ";\n"

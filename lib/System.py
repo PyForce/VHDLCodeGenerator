@@ -84,7 +84,6 @@ class System:
         # Architecture Implementation
         fileText += "\n-- Architecture Implementation\n"
         fileText += "ARCHITECTURE Arq_%s OF %s IS\n"%(self.name,self.name)
-        fileText += "BEGIN\n"
 
         # Port declaration
         fileText += "-- Port declaration\n"
@@ -107,26 +106,28 @@ class System:
 
             fileText += "-- Input ports\n"
             for name,size in inputSig:
-                fileText += "signal %s__%s: std_logic%s;\n"%(i.name,name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1)) #TODO: Aqui cambie
+                fileText += "signal %s_%s: std_logic%s;\n"%(i.name,name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1)) #TODO: Aqui cambie
 
             fileText += "\n-- Output ports\n"
             for name,size in outputSig:
-                fileText += "signal %s__%s: std_logic%s;\n"%(i.name,name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1)) #TODO: Aqui cambie
+                fileText += "signal %s_%s: std_logic%s;\n"%(i.name,name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1)) #TODO: Aqui cambie
             if len(tempSig) != 0:
                 fileText += "\n-- Temporary signals\n"
                 for name,size in tempSig:
-                    fileText += "signal %s__%s: std_logic%s;\n"%(i.name,name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1)) #TODO: Aqui cambie
+                    fileText += "signal %s_%s: std_logic%s;\n"%(i.name,name,"" if size == 1 else "_vector(%d downto 0)"%(size - 1)) #TODO: Aqui cambie
+
+        fileText += "BEGIN\n"
 
         # Defining connections
         fileText += "\n-- Defining connections\n"
 
         for i in self.block:
             for port_inp in i.input_ports:
-                receiver = i.name + "__" + port_inp.name
+                receiver = i.name + "_" + port_inp.name
                 if self.system_input == port_inp.connection.out_block:
                     sender = port_inp.connection.out_block.output_ports[port_inp.connection.ind_output].name
                 else:
-                    sender = port_inp.connection.out_block.name + "__" + port_inp.connection.out_block.output_ports[port_inp.connection.ind_output].name
+                    sender = port_inp.connection.out_block.name + "_" + port_inp.connection.out_block.output_ports[port_inp.connection.ind_output].name
                 fileText += "%s <= %s;\n"%(receiver, sender)
             fileText += "\n"
 
@@ -141,7 +142,8 @@ class System:
         # Connecting outputs
         fileText += "-- Connecting outputs\n"
         for i in self.system_output.input_ports:
-            fileText += "%s <= %s__%s;\n"%(i.name,i.connection.out_block.name,i.connection.out_block.output_ports[i.connection.ind_output].name)
+            if i.connection:
+                fileText += "%s <= %s%s;\n"%(i.name,"" if i.connection.out_block.name in ("SystemInput", "SystemOutput") else i.connection.out_block.name+"_",i.connection.out_block.output_ports[i.connection.ind_output].name)
 
         fileText += "END Arq_%s;\n"%self.name
 
@@ -150,7 +152,37 @@ class System:
         return fileText
 
     def exportVHDLCode(self):
-        return "code"
+        fileText = ""
+        # Connecting input signals
+
+
+        # Defining connections
+        fileText += "\n-- Defining connections\n"
+
+        for i in self.block:
+            for port_inp in i.input_ports:
+                receiver = i.name + "_" + port_inp.name
+                if self.system_input == port_inp.connection.out_block:
+                    sender = port_inp.connection.out_block.output_ports[port_inp.connection.ind_output].name
+                else:
+                    sender = port_inp.connection.out_block.name + "_" + port_inp.connection.out_block.output_ports[port_inp.connection.ind_output].name
+                fileText += "%s <= %s;\n"%(receiver, sender)
+            fileText += "\n"
+
+        # Block implementations
+        fileText += "\n-- Blocks implementation\n"
+
+        for i in self.block:
+            fileText += "-- Implementation of %s block\n"%i.name
+            fileText += i.generate()
+            fileText += "\n"
+
+        # Connecting outputs
+
+
+        # END IMPLEMENTATION
+
+        return fileText
 
     def __getitem__(self, name):
         """ Find a port for his name.
@@ -177,6 +209,7 @@ class System:
         :param input_block:
         :param ind_input:
         """
+        #raise ValueError()
         conn = _Connection(output_block,ind_output,input_block,ind_input,self)  # Creating the connection between 2 blocks
         output_block.output_ports[ind_output].connection.append(conn)  # Linking the connection with the output block
         input_block.input_ports[ind_input].connection = conn           # Linking the connection with the input block

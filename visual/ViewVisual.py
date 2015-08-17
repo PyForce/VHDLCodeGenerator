@@ -55,9 +55,15 @@ class QView(QGraphicsView):
             y2 = coord.y()
             self.currentLine.setLine(self.currentItem.x1, self.currentItem.y1, x2, y2)
 
+        #for i in self.scene().collidingItems(event.pos()):
+        #    self.parent()
+        #    hay que escribir el nombre de todo en el status bar
+        #    setTooltip(str(self.block.__class__).split("'")[1].split(".")[-1])
+
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
         item = self.itemAt(event.pos())
+        print("begin", item, item.zValue())
         if isinstance(item,visual.BlockVisual.QPin) and self.mode() == data.constants.DEFAULT_MODE:
             self.currentItem = item
             self.beginLine()
@@ -72,6 +78,7 @@ class QView(QGraphicsView):
             # self.setDragMode(self.ScrollHandDrag)
 
             item = self.itemAt(event.pos())
+            print("end ", item)
             # print("Item size:%d\nItem2 Size:%d"%(item.getSize(),self.currentItem.getSize()))
 
             if isinstance(item, visual.BlockVisual.QPin) and item.mode != self.currentItem.mode and item.getSize() == self.currentItem.getSize():
@@ -117,3 +124,4 @@ class QView(QGraphicsView):
             self.scale(1.25,1.25)
         else:
             self.scale(0.8,0.8)
+

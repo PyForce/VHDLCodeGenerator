@@ -13,6 +13,11 @@ import pickle
 from data import *
 from visual.ViewVisual import *
 
+from .Block import Block as _Block
+from lib.Connection import Connection as _Connection
+
+
+
 
 from .System import System as _System
 from visual.SystemVisual import QSystem
@@ -45,9 +50,9 @@ class IProject:
     def load(cls,path):
         dir, name = os.path.split(path)
         file = open(dir + "\\" + name,"rb")
-        system = pickle.load(file)
+        input_info, input_info = pickle.load(file)
         file.close()
-        return IProject(path,system.input_info,system.output_info)
+        return IProject(path, input_info, input_info)
 
     def save(self):
         # Saving file
@@ -58,7 +63,8 @@ class IProject:
         try:os.mkdir(vhdlDir+"\\"+proj)
         except:pass
         f = open(self.dir + "\\" + self.name,"wb")
-        pickle.dump(self.system,f)
+        info = (self.system.input_info, self.system.output_info)
+        pickle.dump(info, f, pickle.HIGHEST_PROTOCOL )
         f.close()
 
     def initializeView(self,view):

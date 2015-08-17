@@ -46,7 +46,7 @@ class PortWidget(QWidget):
         label.setText("Port %d:"%(index))
 
         lineEdit = QLineEdit()
-        lineEdit.setText("%s_%d"%(self.defaultName,index))
+        lineEdit.setText("%s%d"%(self.defaultName,index))
         self.lineEdit.append(lineEdit)
 
         spinBox = QSpinBox()

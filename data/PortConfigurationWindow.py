@@ -31,7 +31,9 @@ class PortConfigurationWindow(QWidget):
         self.parent = parent
         self.initializeUI()
 
-        self.text = "There can't be more than one port with the same name"
+        self.text1 = "There can't be more than one port with the same name"
+        self.text2 = "Port names can not contain underscores"
+        self.text3 = "Port names can not be empty"
 
     def initializeUI(self):
         """ Initialize all graphics components of the New Project Window
@@ -51,7 +53,8 @@ class PortConfigurationWindow(QWidget):
         self.ui.cancelButton.clicked.connect(self.cancel)
 
     def validate(self):
-        """ Check if all names are valid, they doesn't match between them
+        """ Check if all names are valid, they don't match between them
+            and the don't contains underscores
 
         :return:    True/False
         """
@@ -62,26 +65,34 @@ class PortConfigurationWindow(QWidget):
         for i in range(len(_in)):
             curText = _in[i].text()
             if curText in validNames:
-                return False
+                return False, self.text1
+            if "_" in curText:
+                return False, self.text2
+            if not curText:
+                return False, self.text3
             validNames.add(curText)
 
         for i in range(len(_out)):
             curText = _out[i].text()
             if curText in validNames:
-                return False
+                return False, self.text1
+            if "_" in curText:
+                return False, self.text2
+            if not curText:
+                return False, self.text3
             validNames.add(curText)
 
-        return True
+        return True, ""
 
     def cancel(self):
         self.parent.show()
         self.close()
 
     def accept(self):
-        self.text += "!"
-        if self.validate():
+        valid, msg = self.validate()
+        if valid:
             self.main.createProject(self.name,self.inputWidget.getInfo(),self.outputWidget.getInfo())
             self.parent.close()
             self.close()
         else:
-            self.ui.statusBar.setText(self.text)
+            self.ui.statusBar.setText(msg)

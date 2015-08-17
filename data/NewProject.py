@@ -38,16 +38,19 @@ class NProjectWindow(QWidget):
         self.close()
 
     def textChanged(self,text):
-        if self.validateName(text):
-            self.ui.statusBar.setText("New name available")
-            self.valid = True
-        else:
-            self.ui.statusBar.setText("New name NOT available !!!")
-            self.valid = False
+        self.valid, msg = self.validateName(text)
+        self.ui.statusBar.setText(msg)
 
     def validateName(self,text):
         """ Check that the current name selected is available
         """
         # TODO: Check that this name doesn't exist already on the current directory
-        return  not (text == "" or text in self.main.projects)
+        if not text:
+            return False, "Project name can not be empty"
+        elif text in self.main.projects:
+            return False, "There is an existing project with the same name"
+        elif " " in text:
+            return False, "Project name can not contain underscores"
+        else:
+            return True, "Project name is available"
 

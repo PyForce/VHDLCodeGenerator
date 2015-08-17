@@ -64,7 +64,7 @@ class Block:
     def getSignalName(self,name):
         """ Valid name of the signal to be implemented on the VHDL Code
         """
-        return "%s__%s"%(self.name,name)
+        return "%s_%s"%(self.name,name)
 
     # TODO: validate the name, there cant be 2 ports with the same name (Variables too)
     def addVariable(self,name,size):
@@ -151,7 +151,7 @@ class Block:
         if name in self.system.block_name:
             pos = 2
             while True:
-                curName = name + "_" + str(pos)
+                curName = name + str(pos)
                 if not curName in self.system.block_name:
                     name = curName
                     break

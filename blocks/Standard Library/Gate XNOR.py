@@ -30,7 +30,7 @@ class XNORGate(Block):
         :param system:
         """
         self.numInput = numInput
-        self.name = "XNOR_GATE"
+        self.name = "XNORGATE"
         self.sizeInput = sizeInput
 
 
@@ -49,7 +49,7 @@ class XNORGate(Block):
             for i in range (self.sizeInput):
                 filetext += "%s[%d]"%(self.getInputSignalName(0),self.sizeInput-i-1)
                 for j in range(1,self.numInput):
-                    filetext += " xnor %s[%d]"%(self.getInputSignalName(j),self.sizeInput-i-1)
+                    filetext += " xnor %s(%d"%(self.getInputSignalName(j),self.sizeInput-i-1)
                 if i != self.sizeInput - 1:
                     filetext += " & "
         filetext += ";\n"

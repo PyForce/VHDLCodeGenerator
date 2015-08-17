@@ -30,7 +30,7 @@ class NANDGate(Block):
         :param system:
         """
         self.numInput = numInput
-        self.name = "NAND_GATE"
+        self.name = "NANDGATE"
         self.sizeInput = sizeInput
 
 
@@ -47,9 +47,9 @@ class NANDGate(Block):
         else:
             filetext += "%s <= "%self.getOutputSignalName(0)
             for i in range (self.sizeInput):
-                filetext += "%s[%d]"%(self.getInputSignalName(0),self.sizeInput-i-1)
+                filetext += "%s(%d"%(self.getInputSignalName(0),self.sizeInput-i-1)
                 for j in range(1,self.numInput):
-                    filetext += " nand %s[%d]"%(self.getInputSignalName(j),self.sizeInput-i-1)
+                    filetext += " nand %s(%d"%(self.getInputSignalName(j),self.sizeInput-i-1)
                 if i != self.sizeInput - 1:
                     filetext += " & "
         filetext += ";\n"
