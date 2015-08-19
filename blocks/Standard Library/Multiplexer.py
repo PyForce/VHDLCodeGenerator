@@ -62,15 +62,15 @@ class Multiplexer(Block):
             for i in range(self.numMuxIn):
                 selbinary = bin(i)[2:]
                 filetext += "%s when (%s = %s) else\n"%(self.getInputSignalName(i),self.getInputSignalName(self.numMuxIn),"'"+selbinary+"'" if self.getInputSignalSize(self.numMuxIn) == 1 else '"'+selbinary+'"')
-            filetext += "%s when others;\n"%(("'"+self.defaultOutput+"'") if (len(self.defaultOutput) == 1) else ('"'+self.defaultOutput+'"'))
+            filetext += "%s;\n"%(("'"+self.defaultOutput+"'") if (len(self.defaultOutput) == 1) else ('"'+self.defaultOutput+'"'))
         else:
-            filetext += "%s <= "%(self.name + "__" + self.variables[0][0])
+            filetext += "%s <= "%(self.getVariableSignalName(0))
             for i in range(self.numMuxIn):
                 selbinary = bin(i)[2:]
                 filetext += "%s when (%s = %s) else\n"%(self.getInputSignalName(i),self.getInputSignalName(self.numMuxIn),"'"+selbinary+"'" if self.getInputSignalSize(self.numMuxIn) == 1 else '"'+selbinary+'"')
-            filetext += "%s when others;\n"%("'"+self.defaultOutput+"'" if len(self.defaultOutput) == 1 else '"'+self.defaultOutput+'"')
+            filetext += "%s;\n"%("'"+self.defaultOutput+"'" if len(self.defaultOutput) == 1 else '"'+self.defaultOutput+'"')
             filetext += "%s <= %s when %s = %s else\n"%(self.getOutputSignalName(0),self.getVariableSignalName(0),self.getInputSignalName(self.numMuxIn + 1),"'"+self.enablerActiveSymbol+"'")
-            filetext += "%s when others;\n"%(("'"+self.HiZ+"'") if (len(self.HiZ) == 1) else ('"'+self.HiZ+'"'))
+            filetext += "%s;\n"%(("'"+self.HiZ+"'") if (len(self.HiZ) == 1) else ('"'+self.HiZ+'"'))
         return filetext
 
 

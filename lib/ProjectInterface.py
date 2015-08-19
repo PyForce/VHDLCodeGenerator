@@ -50,9 +50,9 @@ class IProject:
     def load(cls,path):
         dir, name = os.path.split(path)
         file = open(dir + "\\" + name,"rb")
-        input_info, input_info = pickle.load(file)
+        input_info, output_info = pickle.load(file)
         file.close()
-        return IProject(path, input_info, input_info)
+        return IProject(path, input_info, output_info)
 
     def save(self):
         # Saving file
