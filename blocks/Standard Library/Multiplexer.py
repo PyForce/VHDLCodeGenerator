@@ -60,13 +60,13 @@ class Multiplexer(Block):
         if self.enabler == False:
             filetext += "%s <= "%(self.getOutputSignalName(0))
             for i in range(self.numMuxIn):
-                selbinary = bin(i)[2:]
+                selbinary = bin(i)[2:].zfill(self.selBits)
                 filetext += "%s when (%s = %s) else\n"%(self.getInputSignalName(i),self.getInputSignalName(self.numMuxIn),"'"+selbinary+"'" if self.getInputSignalSize(self.numMuxIn) == 1 else '"'+selbinary+'"')
             filetext += "%s;\n"%(("'"+self.defaultOutput+"'") if (len(self.defaultOutput) == 1) else ('"'+self.defaultOutput+'"'))
         else:
             filetext += "%s <= "%(self.getVariableSignalName(0))
             for i in range(self.numMuxIn):
-                selbinary = bin(i)[2:]
+                selbinary = bin(i)[2:].zfill(self.selBits)
                 filetext += "%s when (%s = %s) else\n"%(self.getInputSignalName(i),self.getInputSignalName(self.numMuxIn),"'"+selbinary+"'" if self.getInputSignalSize(self.numMuxIn) == 1 else '"'+selbinary+'"')
             filetext += "%s;\n"%("'"+self.defaultOutput+"'" if len(self.defaultOutput) == 1 else '"'+self.defaultOutput+'"')
             filetext += "%s <= %s when %s = %s else\n"%(self.getOutputSignalName(0),self.getVariableSignalName(0),self.getInputSignalName(self.numMuxIn + 1),"'"+self.enablerActiveSymbol+"'")

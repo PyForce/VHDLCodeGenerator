@@ -41,16 +41,17 @@ class NORGate(Block):
     def generate(self):
         filetext = ""
         if self.getOutputSignalSize(0) == 1:
-            filetext += "%s <= %s"%(self.getOutputSignalName(0),self.getInputSignalName(0))
+            filetext += "%s <= not (%s"%(self.getOutputSignalName(0),self.getInputSignalName(0))
             for i in range(1,self.numInput):
-                filetext += " nor %s"%(self.getInputSignalName(i))
+                filetext += " or %s"%(self.getInputSignalName(i))
+            filetext += ")"
         else:
             filetext += "%s <= "%self.getOutputSignalName(0)
             for i in range (self.sizeInput):
-                filetext += "(%s(%d)"%(self.getInputSignalName(0),self.sizeInput-i-1)
+                filetext += "(not (%s(%d)"%(self.getInputSignalName(0),self.sizeInput-i-1)
                 for j in range(1,self.numInput):
-                    filetext += " nor %s(%d)"%(self.getInputSignalName(j),self.sizeInput-i-1)
-                filetext += ")"
+                    filetext += " or %s(%d)"%(self.getInputSignalName(j),self.sizeInput-i-1)
+                filetext += "))"
                 if i != self.sizeInput - 1:
                     filetext += " & "
         filetext += ";\n"
